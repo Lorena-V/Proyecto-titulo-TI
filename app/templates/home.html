@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+  <div class="mb-4">
+    <p class="text-primary fw-semibold mb-1">BIENVENIDO</p>
+    <h1 class="display-6 fw-bold mb-0">Usuario Químico Farmaceutico</h1>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-3">  
+        {% for texto, link in menu %}
+        <a class="btn btn-outline-primary" href="{{ link }}">{{ texto }}</a>
+        {% endfor %}
+    </div>
+      
+    </div>
+  </div>
+{% endblock %}
+<!-- <div class="d-flex gap-3 mb-4">
+        <a class="btn btn-outline-primary" href="#">Administración de Usuarios</a>
+        <a class="btn btn-outline-primary" href="#">Reportes</a>
+        <a class="btn btn-outline-primary" href="#">Gestión de Medicamentos</a>
+        <a class="btn btn-outline-primary" href="#">Gestión de Recetas</a>
+        <a class="btn btn-outline-primary" href="#">Gestión de Pacientes</a>
+</div> -->
