@@ -22,7 +22,7 @@ def create_app():
     app = Flask(__name__)
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev")
 
-    # Registrar rutas
+    # Registrar rutas (blueprints)
     from app.routes.health import health_bp
     app.register_blueprint(health_bp)
 
@@ -31,6 +31,9 @@ def create_app():
 
     from app.routes.views import views_bp
     app.register_blueprint(views_bp)
+
+    from app.routes.medicamentos_api import med_api_bp
+    app.register_blueprint(med_api_bp)
 
 
 

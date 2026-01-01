@@ -1,0 +1,83 @@
+<!-- Gestión de medicamentos -->
+ {% extends "base_module.html" %}
+
+{% block title %}Gestión de Medicamentos{% endblock %}
+
+{% block module_content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 fw-bold mb-0">Gestión de medicamentos</h1>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary btn-sm" type="button">Reporte PDF</button>
+        <!-- <button class="btn btn-primary btn-sm" type="button">Nuevo</button> -->
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <!-- Barra superior: búsqueda + filtro -->
+        <div class="row g-2 align-items-center mb-3">
+            <!-- Buscador -->
+            <div class="col-12 col-md-6">
+                <input id="searchMedicamento" class="form-control" type="search" placeholder="Buscar medicamento...">
+            </div>
+            
+            <!-- Filtro por periodo -->
+            <div class="col-12 col-md-3">
+                <select id="filtroPeriodo" class="form-select">
+                    <option value="mes" selected>Mes actual</option>
+                    <option value="3m" >Últimos 3 meses</option>
+                    <option value="6m">Últimos 6 meses</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3 text-md-end">
+                <button id="btnFiltrar" class="btn btn-outline-secondary w-100 w-md-auto" type="button">Filtrar</button>
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>nombre</th>
+                        <th>recetas</th>
+                        <th>despachos</th>
+                        <th>proyección</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaMedicamentosBody">
+                    <tr>
+                        <td>1</td>
+                        <td>Paracetamol 500mg</td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Ibuprofeno 400mg</td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación (visual) -->
+        <nav class="d-flex justify-content-end">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item disabled"><a class="page-link" href="#">Anterior</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+{% endblock %}

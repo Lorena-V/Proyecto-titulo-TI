@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+# Vistas HTML
 
 views_bp = Blueprint("views", __name__)
 
@@ -29,3 +30,7 @@ def home():
 
     menu = menu_por_rol.get(rol, [])
     return render_template("home.html", menu=menu, rol=rol)
+
+@views_bp.get("/medicamentos")
+def medicamentos():
+    return render_template("medicamentos.html")
