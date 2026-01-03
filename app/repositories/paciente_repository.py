@@ -1,5 +1,5 @@
 from sqlalchemy import text
-from app import engine
+from app.db import engine
 
 def create_paciente(nombre: str, rut: str) -> int:
     sql = text("""

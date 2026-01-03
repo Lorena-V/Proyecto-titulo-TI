@@ -5,7 +5,9 @@
 {% block content %}
   <div class="mb-4">
     <p class="text-primary fw-semibold mb-1">BIENVENIDO</p>
-    <h1 class="display-6 fw-bold mb-0">Usuario Químico Farmaceutico</h1>
+    <h1 class="display-6 fw-bold mb-0">
+      {{ rol | replace("_", " ") | title }}
+    </h1>
   </div>
 
   <div class="card shadow-sm">
