@@ -6,40 +6,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!searchInput || !tbody) return;
 
-  let allData = []; // cache
-
-  function parseFechaYYYYMMDD(s) {
-    // "2025-12-20" -> Date
-    const [y, m, d] = (s || "").split("-").map(Number);
-    if (!y || !m || !d) return null;
-    return new Date(y, m - 1, d);
+  function refrescarTabla() {
+    const q = searchInput.value || "";
+    const periodo = filtroSelect ? filtroSelect.value : "mes";
+    cargarMedicamentos(q, periodo);
   }
 
-  function dentroDelPeriodo(fechaStr, periodo) {
-    const fecha = parseFechaYYYYMMDD(fechaStr);
-    if (!fecha) return true; // si no hay fecha, no bloquea
+  async function cargarMedicamentos(query = "", periodo = "mes") {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (periodo) params.set("periodo", periodo);
 
-    const hoy = new Date();
-    const inicio = new Date(hoy);
+    const res = await fetch(`/api/medicamentos?${params.toString()}`);
+    const data = await res.json();
 
-    if (periodo === "mes") {
-      inicio.setMonth(hoy.getMonth() - 1);
-    } else if (periodo === "3m") {
-      inicio.setMonth(hoy.getMonth() - 3);
-    } else if (periodo === "6m") {
-      inicio.setMonth(hoy.getMonth() - 6);
-    } else {
-      return true;
-    }
-
-    return fecha >= inicio && fecha <= hoy;
-  }
-
-  function render(data) {
     tbody.innerHTML = "";
 
     data.forEach((m) => {
-      const proyeccion = Math.max(0, (m.resetas || 0) - (m.despachos || 0));
+      const proyeccion = Math.max(
+        0,
+        (m.recetas ?? 0) - (m.despachos ?? 0)
+      );
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -53,36 +40,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function aplicarFiltros() {
-    const q = (searchInput.value || "").toLowerCase().trim();
-    const periodo = filtroSelect ? filtroSelect.value : "mes";
-
-    const filtrado = allData
-      .filter((m) => (q ? m.nombre.toLowerCase().includes(q) : true))
-      .filter((m) => dentroDelPeriodo(m.fecha, periodo));
-
-    render(filtrado);
-  }
-
-  async function cargarInicial() {
-    const res = await fetch("/api/medicamentos");
-    allData = await res.json();
-    aplicarFiltros();
-  }
-
-  // Cargar al entrar
-  cargarInicial();
+  // Cargar inicial
+  refrescarTabla();
 
   // Evento: búsqueda dinámica
-  searchInput.addEventListener("input", aplicarFiltros);
+  searchInput.addEventListener("input", refrescarTabla);
 
-  // Evento: cambio del select (filtra al cambiar)
+  // Evento: cambio de periodo
   if (filtroSelect) {
-    filtroSelect.addEventListener("change", aplicarFiltros);
+    filtroSelect.addEventListener("change", refrescarTabla);
   }
 
-  // Evento: botón filtrar (por si quieres “demostrar click”)
+  // Evento: botón filtrar 
   if (btnFiltrar) {
-    btnFiltrar.addEventListener("click", aplicarFiltros);
+    btnFiltrar.addEventListener("click", refrescarTabla);
   }
 });
