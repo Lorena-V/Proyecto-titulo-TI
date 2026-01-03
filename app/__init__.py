@@ -26,4 +26,8 @@ def create_app():
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp)
 
+    from app.context import inject_user
+    app.context_processor(inject_user)
+
+
     return app

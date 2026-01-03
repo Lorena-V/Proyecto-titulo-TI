@@ -29,7 +29,7 @@ def home():
         ],
     }
     menu = menu_por_rol.get(rol, [])
-    return render_template("home.html", rol=rol) #para que el html sepa con que rol está logueado
+    return render_template("home.html", rol=rol, menu=menu) #para que el html sepa con que rol está logueado
 
 @views_bp.get("/gestion_medicamentos")
 @roles_required("QF", "AUXILIAR", "ABASTECIMIENTO")

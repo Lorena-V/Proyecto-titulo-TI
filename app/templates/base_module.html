@@ -3,26 +3,18 @@
 
 {% block content %}
     <div class="row g-0">
-        <!-- Sidebar (vertical) 
-         (En móvil el sidebar pasa arriba (col-12) y en escritorio queda lateral)-->
+
+        <!-- Sidebar (vertical)  -->
         <aside class="col-12 col-md-3 col-lg-2 bg-white border-end p-3">
             <div class="d-flex flex-column gap-2">
-                <a class="btn btn-light text-start" href="/home">Inicio</a>
-                <a class="btn btn-light text-start" href="/usuarios">Administración de Usuarios</a>
-                <a class="btn btn-light text-start" href="/reportes">Reportes</a>
-                <a class="btn btn-light text-start" href="/gestion_medicamentos">Gestión de Medicamentos</a>
-                <a class="btn btn-light text-start" href="/gestion_recetas">Gestión de Recetas</a>
-                <a class="btn btn-light text-start" href="/gestion_pacientes">Gestión de Pacientes</a>
+                {% block sidebar %}
+                {% include "partials/sidebar.html" %}
+                {% endblock %}
             </div>
         </aside>
 
         <!-- Contenido del módulo -->
         <section class="col-12 col-md-9 col-lg-10 p-4">
-        <!-- Encabezado de usuario -->
-            <div class="mb-4">
-                <p class="text-primary fw-semibold mb-1">BIENVENIDO</p>
-                <h1 class="display-6 fw-bold mb-0">Usuario Químico Farmacéutico</h1>
-            </div>
             {% block module_content %}{% endblock %}
         </section>
     </div>
