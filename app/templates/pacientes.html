@@ -1,6 +1,40 @@
 {% extends "base_module.html" %}
-{% block title %}Pacientes{% endblock %}
+
+{% block title %}Gestión de Pacientes{% endblock %}
+
 {% block module_content %}
-<h1 class="h4 fw-bold">Gestión de Pacientes</h1>
-<p class="text-muted mb-0">Módulo en construcción.</p>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h4 fw-bold mb-0">Gestión de Pacientes</h1>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Paciente</th>
+            <th>Contacto</th>
+            <th>Recetas</th>
+            <th>Patología</th>
+            <th>Ingreso</th>
+            <th>Duración</th>
+            <th>Vencimiento</th>
+            <th>Estado</th>
+            <th>Último despacho</th>
+            <th>Despachos</th>
+          </tr>
+        </thead>
+        <tbody id="tablaPacientesBody">
+          <!-- JS inyecta filas aquí -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
 {% endblock %}
+

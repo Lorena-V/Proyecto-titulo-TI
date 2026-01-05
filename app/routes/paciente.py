@@ -1,3 +1,5 @@
+# Trabaja con tabla paciente, se creó para crear paciente, listar pacientes y validar rut
+# GET POST: lista pacientes y crea pacientes
 from flask import Blueprint, jsonify, request
 from app.services.paciente_service import (crear_paciente, obtener_pacientes, ValidationError, DuplicateRUTError)
 

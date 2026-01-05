@@ -29,5 +29,9 @@ def create_app():
     from app.context import inject_user
     app.context_processor(inject_user)
 
+    from app.routes.gestion_pacientes_api import gestion_pacientes_api_bp
+    app.register_blueprint(gestion_pacientes_api_bp)
+
+
 
     return app
