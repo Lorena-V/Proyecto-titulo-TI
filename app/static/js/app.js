@@ -133,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return "Vigente";
   }
 
+  // Renderiza la tabla con los datos dados (del filtro)
   function render(data) {
     tbody.innerHTML = "";
 
@@ -174,12 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const estadoSel = filtroEstado?.value || "";
 
     const filtrados = allData.filter((row) => {
-      // 1) Buscador: solo por nombre de paciente
+      // Buscador: solo por nombre de paciente
       if (q && !(row.paciente || "").toLowerCase().includes(q)) {
         return false;
       }
 
-      // 2) Filtro estado
+      // Filtro estado
       if (estadoSel) {
         const est = estadoCalculado(row);
         if (estadoSel !== est) return false;
@@ -191,23 +192,23 @@ document.addEventListener("DOMContentLoaded", () => {
     render(filtrados);
   }
 
-  // Carga inicial
-  fetch("/api/gestion_pacientes")
-    .then((res) => res.json())
-    .then((data) => {
+  // Carga inicial de datos de pacientes
+  async function cargarPacientes() {
+    // Obtener datos del servidor
+    try {
+      // Fetch API
+      const res = await fetch("/api/gestion_pacientes");
+      const data = await res.json();
       allData = Array.isArray(data) ? data : [];
       aplicarFiltros(); // render inicial
-    })
-    .catch((err) => {
+    } catch (err) {
       console.error("Error cargando pacientes:", err);
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="10" class="text-center text-danger">
-            Error al cargar datos
-          </td>
-        </tr>
-      `;
-    });
+    }
+  }
+  // Exponer función globalmente (para recarga externa)
+  window.cargarPacientes = cargarPacientes;
+  // Iniciar carga (actualiza allData)
+  cargarPacientes();
 
   // Eventos de filtros para pacientes
   if (searchInput) {
@@ -258,21 +259,24 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = await res.json();
-
-      // Cerrar modal
       const modalEl = document.getElementById("modalNuevoPaciente");
       const modal = bootstrap.Modal.getInstance(modalEl);
+
+      // Esperar a que el modal se cierre completamente
+      modalEl.addEventListener(
+        "hidden.bs.modal",
+        async () => {
+          mostrarConfirmacionPaciente(data.id);
+          form.reset();
+        },
+        { once: true } // importante: solo una vez
+      );
+
       modal.hide();
 
-      // Mostrar confirmación + acción
-      mostrarConfirmacionPaciente(data.id);
-
-      // limpiar formulario
-      form.reset();
-
     } catch (err) {
-      console.error(err);
-      alert("Error de conexión con el servidor");
+      console.error("Error real: ", err);
+      alert("Error (ver consola).");
     }
   });
 });
@@ -280,21 +284,37 @@ document.addEventListener("DOMContentLoaded", () => {
 // Muestra una alerta de confirmación al crear un paciente
 function mostrarConfirmacionPaciente(idPaciente) {
   const container = document.createElement("div");
-  container.className = "alert alert-success d-flex justify-content-between align-items-center mt-3";
+  container.className =
+    "alert alert-success d-flex justify-content-between align-items-center mt-3";
+
   container.innerHTML = `
     <div>
       <strong>Paciente creado correctamente.</strong>
     </div>
-    <a href="/gestion_recetas?paciente=${idPaciente}" class="btn btn-sm btn-outline-primary">
-      Crear receta
-    </a>
+    <div class="d-flex gap-2">
+      <a href="/gestion_recetas?paciente=${idPaciente}"
+         class="btn btn-sm btn-outline-primary">
+        Crear receta
+      </a>
+      <button class="btn btn-sm btn-outline-secondary" id="btnCerrarConfirmacion">
+        Volver al listado
+      </button>
+    </div>
   `;
 
-  // Insertar en la parte superior de la tarjeta del body (lista de pacientes)
   const card = document.querySelector(".card-body");
   card.prepend(container);
 
-  // auto ocultar después de 8 segundos
-  // setTimeout(() => container.remove(), 8000);
+  // BOTÓN cerrar confirmación → refresca lista
+  container
+    .querySelector("#btnCerrarConfirmacion")
+    .addEventListener("click", async () => {
+      container.remove();
+
+      // Recargar lista de pacientes (No los muestra ???  CORREGIR!!)
+      if (window.cargarPacientes) {
+        await window.cargarPacientes();
+      }
+    });
 }
 
