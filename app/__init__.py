@@ -32,6 +32,8 @@ def create_app():
     from app.routes.gestion_pacientes_api import gestion_pacientes_api_bp
     app.register_blueprint(gestion_pacientes_api_bp)
 
+    from app.routes.medicamentos_list_api import med_list_api_bp
+    app.register_blueprint(med_list_api_bp)
 
 
     return app

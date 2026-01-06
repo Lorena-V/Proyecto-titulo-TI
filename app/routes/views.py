@@ -41,6 +41,7 @@ def gestion_medicamentos():
 def gestion_pacientes():
     return render_template("pacientes.html")
 
+# Rutas para gestión de recetas
 @views_bp.get("/gestion_recetas")
 @roles_required("QF", "AUXILIAR")
 def gestion_recetas():

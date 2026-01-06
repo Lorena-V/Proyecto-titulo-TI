@@ -318,3 +318,38 @@ function mostrarConfirmacionPaciente(idPaciente) {
     });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const contenedor = document.getElementById("listaMedicamentos");
+  if (!contenedor) return;
+
+  fetch("/api/medicamentos/lista")
+    .then(res => res.json())
+    .then(data => {
+      contenedor.innerHTML = "";
+
+      data.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "form-check";
+
+        div.innerHTML = `
+          <input class="form-check-input"
+                 type="checkbox"
+                 name="medicamentos"
+                 value="${m.id_medicamento}"
+                 id="med_${m.id_medicamento}">
+          <label class="form-check-label" for="med_${m.id_medicamento}">
+            ${m.nombre}
+          </label>
+        `;
+
+        contenedor.appendChild(div);
+      });
+    })
+    .catch(err => {
+      console.error("Error cargando medicamentos:", err);
+      contenedor.innerHTML =
+        `<div class="text-danger small">Error al cargar medicamentos</div>`;
+    });
+});
+
+

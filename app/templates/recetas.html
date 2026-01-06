@@ -1,6 +1,84 @@
 {% extends "base_module.html" %}
-{% block title %}Recetas{% endblock %}
+
+{% block title %} Gestión de Recetas{% endblock %}
+
 {% block module_content %}
-<h1 class="h4 fw-bold">Gestión de Recetas</h1>
-<p class="text-muted mb-0">Módulo en construcción.</p>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 fw-bold mb-0">Gestión de Recetas</h1>
+    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevaReceta">
+        Nueva receta
+    </button>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <p class="text-muted mb-0">Módulo en construcción: aquí mostraremos el listado de recetas.</p>
+    </div>
+</div>
+
+<!-- Modal Nueva Receta -->
+<div class="modal fade" id="modalNuevaReceta" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva receta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formNuevaReceta">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Paciente</label>
+                            <input id="pacienteId" name="id_paciente" class="form-control" placeholder="ID paciente" required>
+                            <div class="form-text">
+                                Por ahora usaremos ID del paciente (luego lo cambiamos a selector).
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de emisión</label>
+                            <input name="fecha_emision" type="date" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Duración (días)</label>
+                            <input name="duracion" type="number" class="form-control" min="1" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Patología</label>
+                            <select name="id_patologia" class="form-select" required>
+                                <option value="" selected disabled>Seleccionar...</option>
+                                <!-- luego lo cargamos desde DB -->
+                                <option value="1">Broncopulmonar</option>
+                                <option value="2">Psiquiátrico</option>
+                                <option value="3">Gastro</option>
+                                <option value="4">Hipertensión</option>
+                                <option value="5">Diabetes</option>
+                                <option value="6">Otros</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Medicamentos</label>
+                            <div id="listaMedicamentos" class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                                <div class="text-muted small">Cargando medicamentos...</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formNuevaReceta" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

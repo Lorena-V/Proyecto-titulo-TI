@@ -5,11 +5,13 @@ from app.services.paciente_service import (crear_paciente, obtener_pacientes, Va
 
 paciente_bp = Blueprint("paciente", __name__, url_prefix="/pacientes")
 
-#rutas
+#RUTAS
+# Listar pacientes
 @paciente_bp.get("")
 def listar():
     return jsonify(obtener_pacientes()), 200
 
+# Crear paciente
 @paciente_bp.post("")
 def crear():
     data = request.get_json(silent=True) or {}
