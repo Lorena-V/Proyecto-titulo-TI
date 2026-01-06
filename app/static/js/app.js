@@ -101,10 +101,12 @@ document.addEventListener("DOMContentLoaded", () => {
 //     });
 // });
 
+// Agrega funcionalidad de búsqueda y filtros para gestión de pacientes
 document.addEventListener("DOMContentLoaded", () => {
   const tbody = document.getElementById("tablaPacientesBody");
   if (!tbody) return;
 
+  // Elementos de filtro
   const searchInput = document.getElementById("searchPaciente");
   const filtroEstado = document.getElementById("filtroEstado");
   const btnFiltrar = document.getElementById("btnFiltrarPacientes");
@@ -112,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let allData = []; // cache
 
   function estadoCalculado(row) {
-    // Usaremos la fecha de vencimiento para decidir Vigente / Vencida / Porvencer
+    // fecha de vencimiento para decidir Vigente / Vencida / Porvencer
     // Por vencer = vigente y vence dentro de 30 días
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
@@ -141,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         est === "Porvencer" ? "bg-warning text-dark" :
         "bg-danger";
 
+      // Crear fila  
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${row.paciente}</td>
@@ -206,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     });
 
-  // Eventos (igual estilo que medicamentos)
+  // Eventos de filtros para pacientes
   if (searchInput) {
     searchInput.addEventListener("input", aplicarFiltros);
   }
@@ -218,9 +221,80 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
+// Formatea una fecha AAAA-MM-DD a DD/MM/AAAA
 function formatFecha(fecha) {
   if (!fecha) return "-";
   const [y, m, d] = fecha.split("-");
   return `${d}/${m}/${y}`;
 }
+
+// Agrega JS para el formulario de nuevo paciente
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formNuevoPaciente");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const payload = {
+      nombre: formData.get("nombre"),
+      rut: formData.get("rut"),
+      contacto: formData.get("contacto"),
+    };
+
+    // Enviar a servidor
+    try {
+      const res = await fetch("/pacientes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "Error al crear paciente");
+        return;
+      }
+
+      const data = await res.json();
+
+      // Cerrar modal
+      const modalEl = document.getElementById("modalNuevoPaciente");
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal.hide();
+
+      // Mostrar confirmación + acción
+      mostrarConfirmacionPaciente(data.id);
+
+      // limpiar formulario
+      form.reset();
+
+    } catch (err) {
+      console.error(err);
+      alert("Error de conexión con el servidor");
+    }
+  });
+});
+
+// Muestra una alerta de confirmación al crear un paciente
+function mostrarConfirmacionPaciente(idPaciente) {
+  const container = document.createElement("div");
+  container.className = "alert alert-success d-flex justify-content-between align-items-center mt-3";
+  container.innerHTML = `
+    <div>
+      <strong>Paciente creado correctamente.</strong>
+    </div>
+    <a href="/gestion_recetas?paciente=${idPaciente}" class="btn btn-sm btn-outline-primary">
+      Crear receta
+    </a>
+  `;
+
+  // Insertar en la parte superior de la tarjeta del body (lista de pacientes)
+  const card = document.querySelector(".card-body");
+  card.prepend(container);
+
+  // auto ocultar después de 8 segundos
+  // setTimeout(() => container.remove(), 8000);
+}
+

@@ -8,7 +8,9 @@
   <h1 class="h4 fw-bold mb-0">Gestión de Pacientes</h1>
   <div class="d-flex gap-2">
     <button class="btn btn-outline-primary btn-sm" type="button">Reporte PDF</button>
-    <button class="btn btn-primary btn-sm" type="button">Nuevo</button>
+    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevoPaciente">
+      Nuevo Paciente
+    </button>   
   </div>
 </div>
 
@@ -18,8 +20,7 @@
     <!-- Barra superior: búsqueda + filtro -->
     <div class="row g-2 align-items-center mb-3">
       <div class="col-12 col-md-6">
-        <input id="searchPaciente" class="form-control" type="search"
-              placeholder="Buscar por paciente...">
+        <input id="searchPaciente" class="form-control" type="search" placeholder="Buscar por paciente...">
       </div>
 
       <div class="col-12 col-md-3">
@@ -60,6 +61,52 @@
       </table>
     </div>
 
+  </div>
+</div>
+
+<!-- Modal Nuevo Paciente -->
+<div class="modal fade" id="modalNuevoPaciente" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Paciente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="formNuevoPaciente">
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nombre completo</label>
+              <input type="text" class="form-control" name="nombre" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">RUT</label>
+              <input type="text" class="form-control" name="rut" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Contacto</label>
+              <input type="text" class="form-control" name="contacto">
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="submit" form="formNuevoPaciente" class="btn btn-primary">
+          Guardar
+        </button>
+      </div>
+
+    </div>
   </div>
 </div>
 
