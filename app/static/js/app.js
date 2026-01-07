@@ -318,6 +318,7 @@ function mostrarConfirmacionPaciente(idPaciente) {
     });
 }
 
+// Carga la lista de medicamentos en el formulario de "nueva receta"
 document.addEventListener("DOMContentLoaded", () => {
   const contenedor = document.getElementById("listaMedicamentos");
   if (!contenedor) return;
@@ -352,4 +353,55 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formNuevaReceta");
+  if (!form) return;
 
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const medicamentosSeleccionados = [];
+    form.querySelectorAll('input[name="medicamentos"]:checked')
+      .forEach(chk => medicamentosSeleccionados.push(chk.value));
+
+    const payload = {
+      id_paciente: formData.get("id_paciente"),
+      fecha_emision: formData.get("fecha_emision"),
+      duracion: formData.get("duracion"),
+      id_patologia: formData.get("id_patologia"),
+      medicamentos: medicamentosSeleccionados,
+    };
+
+    try {
+      const res = await fetch("/api/recetas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "Error al crear receta");
+        return;
+      }
+
+      // cerrar modal
+      const modalEl = document.getElementById("modalNuevaReceta");
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal.hide();
+
+      alert("Receta creada correctamente ✅");
+
+      form.reset();
+      // desmarcar medicamentos
+      form.querySelectorAll('input[name="medicamentos"]')
+        .forEach(chk => chk.checked = false);
+
+    } catch (err) {
+      console.error(err);
+      alert("Error (ver consola).");
+    }
+  });
+});

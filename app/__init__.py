@@ -35,5 +35,7 @@ def create_app():
     from app.routes.medicamentos_list_api import med_list_api_bp
     app.register_blueprint(med_list_api_bp)
 
-
+    from app.routes.recetas_api import recetas_api_bp
+    app.register_blueprint(recetas_api_bp)
+    
     return app
