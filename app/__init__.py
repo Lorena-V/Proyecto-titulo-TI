@@ -20,9 +20,6 @@ def create_app():
     from app.routes.views import views_bp
     app.register_blueprint(views_bp)
 
-    from app.routes.medicamentos_api import med_api_bp
-    app.register_blueprint(med_api_bp)
-
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp)
 

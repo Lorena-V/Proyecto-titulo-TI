@@ -26,7 +26,7 @@ def crear_receta():
     fecha_vencimiento = (fecha_dt + timedelta(days=duracion)).strftime("%Y-%m-%d")
 
     with engine.begin() as conn:
-        # 1) receta
+        # 1) tabla receta
         r = conn.execute(
             text("""
             INSERT INTO receta (
@@ -54,7 +54,7 @@ def crear_receta():
     )
         id_receta = r.lastrowid
 
-        # 2) tratamiento
+        # 2) tabla tratamiento
         t = conn.execute(
             text("""
                 INSERT INTO tratamiento (id_receta, id_patologia)
@@ -64,7 +64,7 @@ def crear_receta():
         )
         id_tratamiento = t.lastrowid
 
-        # 3) tratamiento_medicamento (0..n)
+        # 3) tabla tratamiento_medicamento (0..n)
         for id_med in medicamentos:
             conn.execute(
                 text("""

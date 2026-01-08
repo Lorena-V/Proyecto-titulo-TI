@@ -1,3 +1,5 @@
+
+// Agrega funcionalidad de búsqueda y filtros para gestión de medicamentos
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchMedicamento");
   const tbody = document.getElementById("tablaMedicamentosBody");
@@ -17,20 +19,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (query) params.set("q", query);
     if (periodo) params.set("periodo", periodo);
 
-    const res = await fetch(`/api/medicamentos?${params.toString()}`);
+    const res = await fetch(`/api/medicamentos/lista?${params.toString()}`);
     const data = await res.json();
 
     tbody.innerHTML = "";
 
     data.forEach((m) => {
-      const proyeccion = Math.max(
-        0,
-        (m.recetas ?? 0) - (m.despachos ?? 0)
-      );
+      const proyeccion = Math.max(0, Number(m.proyeccion ?? 0));
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${m.id}</td>
+        <td>${m.id_medicamento}</td>
         <td>${m.nombre}</td>
         <td>${m.recetas ?? 0}</td>
         <td>${m.despachos ?? 0}</td>
@@ -56,50 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btnFiltrar.addEventListener("click", refrescarTabla);
   }
 });
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   const tbody = document.getElementById("tablaPacientesBody");
-//   if (!tbody) return;
-
-//   fetch("/api/gestion_pacientes")
-//     .then(res => res.json())
-//     .then(data => {
-//       tbody.innerHTML = "";
-
-//       data.forEach(row => {
-//         const tr = document.createElement("tr");
-
-//         tr.innerHTML = `
-//           <td>${row.paciente}</td>
-//           <td>${row.contacto ?? "-"}</td>
-//           <td>${row.recetas}</td>
-//           <td>${row.patologia}</td>
-//           <td>${formatFecha(row.ingreso)}</td>
-//           <td>${row.duracion_dias} días</td>
-//           <td>${formatFecha(row.vencimiento)}</td>
-//           <td>
-//             <span class="badge ${row.estado === "Vigente" ? "bg-success" : "bg-danger"}">
-//               ${row.estado}
-//             </span>
-//           </td>
-//           <td>${row.ultimo_despacho ? formatFecha(row.ultimo_despacho) : "-"}</td>
-//           <td>${row.despachos_realizados}</td>
-//         `;
-
-//         tbody.appendChild(tr);
-//       });
-//     })
-//     .catch(err => {
-//       console.error("Error cargando pacientes:", err);
-//       tbody.innerHTML = `
-//         <tr>
-//           <td colspan="10" class="text-center text-danger">
-//             Error al cargar datos
-//           </td>
-//         </tr>
-//       `;
-//     });
-// });
 
 // Agrega funcionalidad de búsqueda y filtros para gestión de pacientes
 document.addEventListener("DOMContentLoaded", () => {
@@ -353,6 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// Agrega funcionalidad al formulario de nueva receta
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formNuevaReceta");
   if (!form) return;
@@ -392,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const modal = bootstrap.Modal.getInstance(modalEl);
       modal.hide();
 
-      alert("Receta creada correctamente ✅");
+      alert("Receta creada correctamente");
 
       form.reset();
       // desmarcar medicamentos
