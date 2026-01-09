@@ -34,5 +34,8 @@ def create_app():
 
     from app.routes.recetas_api import recetas_api_bp
     app.register_blueprint(recetas_api_bp)
+
+    from app.routes.gestion_recetas_api import gestion_recetas_api_bp
+    app.register_blueprint(gestion_recetas_api_bp)
     
     return app

@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify, session
+# API para crear recetas
+from flask import Blueprint, request, jsonify
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
@@ -8,7 +9,7 @@ from app.utils.auth import roles_required
 recetas_api_bp = Blueprint("recetas_api", __name__, url_prefix="/api/recetas")
 
 @recetas_api_bp.post("")
-@roles_required("QF", "AUXILIAR")
+
 def crear_receta():
     data = request.get_json(force=True)
 

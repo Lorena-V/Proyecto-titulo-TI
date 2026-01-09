@@ -13,7 +13,63 @@
 
 <div class="card shadow-sm">
     <div class="card-body">
-        <p class="text-muted mb-0">Módulo en construcción: aquí mostraremos el listado de recetas.</p>
+
+    <!-- Filtros -->
+    <div class="row g-2 align-items-center mb-3">
+      <div class="col-12 col-md-5">
+        <input
+          id="searchReceta"
+          class="form-control"
+          type="search"
+          placeholder="Buscar por paciente..."
+        >
+      </div>
+
+      <div class="col-12 col-md-4">
+        <select id="filtroEstadoReceta" class="form-select">
+          <option value="">Estado: Todas</option>
+          <option value="Vigente">Vigente</option>
+          <option value="Por vencer">Por vencer</option>
+          <option value="Vencida">Vencida</option>
+        </select>
+      </div>
+
+      <div class="col-12 col-md-3 text-md-end">
+        <button
+          id="btnFiltrarRecetas"
+          class="btn btn-outline-secondary w-100 w-md-auto"
+          type="button"
+        >
+          Filtrar
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Paciente</th>
+            <th>Patología</th>
+            <th>Emisión</th>
+            <th>Duración</th>
+            <th>Vencimiento</th>
+            <th>Estado</th>
+            <th>Despachos</th>
+            <th>Último despacho</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaRecetasBody">
+          <tr>
+            <td colspan="9" class="text-center text-muted">
+              Cargando recetas...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     </div>
 </div>
 
