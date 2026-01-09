@@ -361,3 +361,144 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// Agrega funcionalidad de búsqueda y filtros para gestión de recetas
+document.addEventListener("DOMContentLoaded", () => {
+  const tbody = document.getElementById("tablaRecetasBody");
+  if (!tbody) return;
+
+  const searchInput = document.getElementById("searchReceta");
+  const filtroEstado = document.getElementById("filtroEstadoReceta");
+  const btnFiltrar = document.getElementById("btnFiltrarRecetas");
+
+  let allData = []; // cache
+
+  function badgeEstado(estado) {
+    if (estado === "Vigente") return "bg-success";
+    if (estado === "Por vencer") return "bg-warning text-dark";
+    return "bg-danger";
+  }
+
+  function render(data) {
+    tbody.innerHTML = "";
+
+    if (!data.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9" class="text-center text-muted">Sin resultados</td>
+        </tr>
+      `;
+      return;
+    }
+
+    data.forEach((r) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${r.paciente}</td>
+        <td>${r.patologia}</td>
+        <td>${formatFecha(r.fecha_emision)}</td>
+        <td>${r.duracion} días</td>
+        <td>${formatFecha(r.fecha_vencimiento)}</td>
+        <td><span class="badge ${badgeEstado(r.estado)}">${r.estado}</span></td>
+        <td>${r.despachos ?? 0}</td>
+        <td>${r.ultimo_despacho ? formatFecha(r.ultimo_despacho) : "-"}</td>
+        <td class="text-end">
+          <button
+            class="btn btn-outline-primary btn-sm"
+            type="button"
+            onclick="abrirModalDespacho(${r.id_receta})">
+              Registrar despacho
+          </button>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function aplicarFiltros() {
+    const q = (searchInput?.value || "").toLowerCase().trim();
+    const estadoSel = filtroEstado?.value || "";
+
+    const filtrados = allData.filter((r) => {
+      if (q && !(r.paciente || "").toLowerCase().includes(q)) return false;
+      if (estadoSel && r.estado !== estadoSel) return false;
+      return true;
+    });
+
+    render(filtrados);
+  }
+
+  async function cargarRecetas() {
+    try {
+      const res = await fetch("/api/gestion_recetas");
+      const data = await res.json();
+      allData = Array.isArray(data) ? data : [];
+      aplicarFiltros();
+    } catch (err) {
+      console.error("Error cargando recetas:", err);
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9" class="text-center text-danger">
+            Error al cargar datos
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // Inicial
+  cargarRecetas();
+
+  // Eventos
+  if (searchInput) searchInput.addEventListener("input", aplicarFiltros);
+  if (filtroEstado) filtroEstado.addEventListener("change", aplicarFiltros);
+  if (btnFiltrar) btnFiltrar.addEventListener("click", aplicarFiltros);
+
+  // (opcional) exponer para recargar desde otros flujos
+  window.cargarRecetas = cargarRecetas;
+});
+
+
+// Funcionalidad para el modal de registrar despacho
+let recetaSeleccionada = null;
+
+function abrirModalDespacho(idReceta) {
+  recetaSeleccionada = idReceta;
+  const modal = new bootstrap.Modal(
+    document.getElementById("modalDespacho")
+  );
+  modal.show();
+}
+
+// Maneja el envío del formulario de despacho
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("btnConfirmarDespacho");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    try {
+      const res = await fetch("/api/despachos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_tratamiento: recetaSeleccionada }),
+      });
+
+      if (!res.ok) {
+        alert("Error al registrar despacho");
+        return;
+      }
+
+      const modalEl = document.getElementById("modalDespacho");
+      bootstrap.Modal.getInstance(modalEl).hide();
+
+      if (window.cargarRecetas) {
+        window.cargarRecetas();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error de conexión");
+    }
+  });
+});
