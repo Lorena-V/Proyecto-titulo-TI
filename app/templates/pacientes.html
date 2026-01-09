@@ -80,19 +80,51 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Nombre completo</label>
-              <input type="text" class="form-control" name="nombre" required>
+              <input 
+                type="text" 
+                id="nombrePaciente" 
+                class="form-control" 
+                name="nombre"
+                placeholder="Ej: Dwight Schrute" required>
+              <div class="invalid-feedback">Ingresa un nombre válido (mínimo 3 letras y sin números).</div>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">RUT</label>
-              <input type="text" class="form-control" name="rut" required>
+              <label 
+                class="form-label">RUT</label>
+              <input 
+                type="text"
+                id="rutPaciente"
+                class="form-control"
+                name="rut"
+                placeholder="Ej: 12.345.678-9" required>
+              <div class="invalid-feedback">Ingresa un RUT válido.</div>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">Contacto</label>
-              <input type="text" class="form-control" name="contacto">
+              <label class="form-label">Teléfono de contacto</label>
+              <input 
+                type="tel"
+                id="telefonoPaciente"
+                class="form-control"
+                name="contacto"
+                inputmode="numeric"
+                maxlength="9"
+                placeholder="Ej: 912345678">
+              <div class="invalid-feedback">Ingresa un teléfono válido (9 dígitos).</div>
             </div>
-          </div>
+
+            <!-- <div class="col-md-6">
+              <label class="form-label">Correo</label>
+              <input 
+                type="email"
+                id="correoPaciente"
+                class="form-control"
+                name="correo"
+                inputmode="email"
+                placeholder="Ej: Dwight.schrute@correo.com" required>
+              <div class="invalid-feedback">Ingresa un correo válido.</div>
+          </div> -->
 
         </form>
       </div>
@@ -101,7 +133,7 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Cancelar
         </button>
-        <button type="submit" form="formNuevoPaciente" class="btn btn-primary">
+        <button type="submit" form="formNuevoPaciente" class="btn btn-primary" id="btnGuardarPaciente" disabled>
           Guardar
         </button>
       </div>
@@ -111,4 +143,3 @@
 </div>
 
 {% endblock %}
-

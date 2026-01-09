@@ -189,14 +189,111 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formNuevoPaciente");
   if (!form) return;
 
+  const nombreInput = form.querySelector('input[name="nombre"]');
+  const rutInput = form.querySelector('input[name="rut"]');
+  const telefonoInput = form.querySelector('input[name="contacto"]');
+  const btnGuardar = document.querySelector('button[form="formNuevoPaciente"]');
+
+  function validarNombreEnVivo() {
+    if (!nombreInput) return true;
+    const nombreRaw = (nombreInput.value || "").trim();
+    const nombreOk = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]{3,}$/.test(nombreRaw);
+    nombreInput.classList.toggle("is-invalid", !nombreOk);
+    nombreInput.classList.toggle("is-valid", nombreOk);
+    return nombreOk;
+  }
+
+  if (nombreInput) {
+    nombreInput.addEventListener("input", () => {
+      validarNombreEnVivo();
+      actualizarEstadoGuardar();
+    });
+  }
+
+  function validarRutEnVivo() {
+    if (!rutInput) return true;
+    const rutRaw = (rutInput.value || "").trim();
+    const rutOk = /^(?=.*\d)[0-9kK.\-]{3,}$/.test(rutRaw);
+    rutInput.classList.toggle("is-invalid", !rutOk);
+    rutInput.classList.toggle("is-valid", rutOk);
+    return rutOk;
+  }
+
+  if (rutInput) {
+    rutInput.addEventListener("input", () => {
+      validarRutEnVivo();
+      actualizarEstadoGuardar();
+    });
+  }
+
+  function validarTelefonoEnVivo() {
+    if (!telefonoInput) return true;
+    const telRaw = (telefonoInput.value || "").trim();
+    const telOk = /^\d{9}$/.test(telRaw);
+    telefonoInput.classList.toggle("is-invalid", !telOk);
+    telefonoInput.classList.toggle("is-valid", telOk);
+    return telOk;
+  }
+
+  if (telefonoInput) {
+    telefonoInput.addEventListener("input", () => {
+      validarTelefonoEnVivo();
+      actualizarEstadoGuardar();
+    });
+  }
+
+  function actualizarEstadoGuardar() {
+    const nombreRaw = (nombreInput?.value || "").trim();
+    const rutRaw = (rutInput?.value || "").trim();
+    const telRaw = (telefonoInput?.value || "").trim();
+
+    const nombreOk = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]{3,}$/.test(nombreRaw);
+    const rutOk = /^(?=.*\d)[0-9kK.\-]{3,}$/.test(rutRaw);
+    const telOk = /^\d{9}$/.test(telRaw);
+
+    if (btnGuardar) {
+      btnGuardar.disabled = !(nombreOk && rutOk && telOk);
+    }
+  }
+
+  actualizarEstadoGuardar();
+
+  // Maneja el envío del formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
+
+    // --- VALIDACIONES FRONTEND (Nuevo Paciente) ---
+    const nombreRaw = (formData.get("nombre") || "").trim();
+    const rutRaw = (formData.get("rut") || "").trim();
+    const telRaw = (formData.get("contacto") || "").trim();
+
+    // 1) Nombre: mínimo 3 letras, solo letras/espacios/acentos
+    const nombreOk = validarNombreEnVivo();
+    if (!nombreOk) {
+      alert("Nombre inválido: usa solo letras y mínimo 3 caracteres.");
+      return;
+    }
+
+    // 2) RUT: validación simple para datos de prueba
+    const rutOk = validarRutEnVivo();
+    if (!rutOk) {
+      alert("RUT inválido: usa números y opcionalmente puntos/guión.");
+      return;
+    }
+
+    // 2) Teléfono: exactamente 9 dígitos
+    const telOk = validarTelefonoEnVivo();
+    if (!telOk) {
+      alert("Teléfono inválido: deben ser 9 dígitos (ej: 912345678).");
+      return;
+    }
+
     const payload = {
-      nombre: formData.get("nombre"),
-      rut: formData.get("rut"),
-      contacto: formData.get("contacto"),
+      nombre: nombreRaw,
+      rut: rutRaw,
+      contacto: telRaw,
     };
 
     // Enviar a servidor
@@ -459,7 +556,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // (opcional) exponer para recargar desde otros flujos
   window.cargarRecetas = cargarRecetas;
 });
-
 
 // Funcionalidad para el modal de registrar despacho
 let recetaSeleccionada = null;
