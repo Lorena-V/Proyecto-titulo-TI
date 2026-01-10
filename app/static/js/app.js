@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchPaciente");
   const filtroEstado = document.getElementById("filtroEstado");
   const btnFiltrar = document.getElementById("btnFiltrarPacientes");
+  const btnReporte = document.getElementById("btnReportePacientes");
 
   let allData = []; // cache
 
@@ -175,6 +176,19 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnFiltrar) {
     btnFiltrar.addEventListener("click", aplicarFiltros);
   }
+
+  // Evento: botón reporte CSV
+  btnReporte?.addEventListener("click", () => {
+    const q = (document.getElementById("searchPaciente")?.value || "").trim();
+    const estado = (document.getElementById("filtroEstado")?.value || "").trim();
+
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (estado) params.set("estado", estado);
+
+    // Fuerza descarga del CSV con los filtros aplicados
+    window.location.href = `/api/reportes/pacientes_csv?${params.toString()}`;
+  });
 });
 
 // Formatea una fecha AAAA-MM-DD a DD/MM/AAAA

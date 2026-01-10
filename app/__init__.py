@@ -41,4 +41,7 @@ def create_app():
     from app.routes.despachos_api import despachos_api_bp
     app.register_blueprint(despachos_api_bp)
     
+    from app.routes.reportes_api import reportes_api_bp
+    app.register_blueprint(reportes_api_bp)
+    
     return app

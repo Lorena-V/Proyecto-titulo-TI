@@ -7,7 +7,11 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="h4 fw-bold mb-0">Gestión de Pacientes</h1>
   <div class="d-flex gap-2">
-    <button class="btn btn-outline-primary btn-sm" type="button">Reporte PDF</button>
+    <button 
+      id="btnReportePacientes"  
+      class="btn btn-outline-primary btn-sm" 
+      type="button">Reporte
+    </button>
     <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevoPaciente">
       Nuevo Paciente
     </button>   
@@ -32,11 +36,11 @@
         </select>
       </div>
 
-      <div class="col-12 col-md-3 text-md-end">
+      <!-- <div class="col-12 col-md-3 text-md-end">
         <button id="btnFiltrarPacientes" class="btn btn-outline-secondary w-100 w-md-auto" type="button">
           Filtrar
         </button>
-      </div>
+      </div> -->
     </div>
 
     <div class="table-responsive">
@@ -64,7 +68,7 @@
   </div>
 </div>
 
-<!-- Modal Nuevo Paciente -->
+<!-- Modal Nuevo Paciente (Modal)-->
 <div class="modal fade" id="modalNuevoPaciente" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
