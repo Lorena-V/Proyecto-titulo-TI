@@ -1,3 +1,4 @@
+# Trabaja con tabla paciente, se creó para crear paciente, listar pacientes
 from app.repositories import paciente_repository
 from sqlalchemy.exc import IntegrityError
 

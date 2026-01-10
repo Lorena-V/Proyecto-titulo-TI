@@ -1,5 +1,6 @@
-# Trabaja con tabla paciente, se creó para crear paciente, listar pacientes y validar rut
+# Trabaja con tabla paciente, se creó para crear paciente, listar pacientes
 # GET POST: lista pacientes y crea pacientes
+import re
 from flask import Blueprint, jsonify, request
 from app.services.paciente_service import (crear_paciente, obtener_pacientes, ValidationError, DuplicateRUTError)
 
@@ -27,3 +28,4 @@ def crear():
 
     except Exception:
         return jsonify({"error": "Error interno al crear paciente"}), 500
+

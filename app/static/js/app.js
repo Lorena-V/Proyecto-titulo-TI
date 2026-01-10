@@ -184,14 +184,14 @@ function formatFecha(fecha) {
   return `${d}/${m}/${y}`;
 }
 
-// Agrega JS para el formulario de nuevo paciente
+// Agrega JS para el formulario de nuevo paciente y validaciones en vivo
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formNuevoPaciente");
   if (!form) return;
 
   const nombreInput = form.querySelector('input[name="nombre"]');
   const rutInput = form.querySelector('input[name="rut"]');
-  const telefonoInput = form.querySelector('input[name="contacto"]');
+  const contactoInput = form.querySelector('input[name="contacto"]');
   const btnGuardar = document.querySelector('button[form="formNuevoPaciente"]');
 
   function validarNombreEnVivo() {
@@ -211,9 +211,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function validarRutEnVivo() {
-    if (!rutInput) return true;
-    const rutRaw = (rutInput.value || "").trim();
-    const rutOk = /^(?=.*\d)[0-9kK.\-]{3,}$/.test(rutRaw);
+    if (!rutInput) return true; 
+    const rutRaw = (rutInput.value || "").trim(); // Validación simple
+    const rutOk = /^\d{7,8}-[0-9kK]$/.test(rutRaw); // Ej: 12345678-9
     rutInput.classList.toggle("is-invalid", !rutOk);
     rutInput.classList.toggle("is-valid", rutOk);
     return rutOk;
@@ -226,18 +226,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function validarTelefonoEnVivo() {
-    if (!telefonoInput) return true;
-    const telRaw = (telefonoInput.value || "").trim();
-    const telOk = /^\d{9}$/.test(telRaw);
-    telefonoInput.classList.toggle("is-invalid", !telOk);
-    telefonoInput.classList.toggle("is-valid", telOk);
-    return telOk;
+  function validarContactoEnVivo() {
+    if (!contactoInput) return true;
+    const contactoRaw = (contactoInput.value || "").trim();
+    const contactoOk = /^\d{9}$/.test(contactoRaw);
+    contactoInput.classList.toggle("is-invalid", !contactoOk);
+    contactoInput.classList.toggle("is-valid", contactoOk);
+    return contactoOk;
   }
 
-  if (telefonoInput) {
-    telefonoInput.addEventListener("input", () => {
-      validarTelefonoEnVivo();
+  if (contactoInput) {
+    contactoInput.addEventListener("input", () => {
+      validarContactoEnVivo();
       actualizarEstadoGuardar();
     });
   }
@@ -245,14 +245,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function actualizarEstadoGuardar() {
     const nombreRaw = (nombreInput?.value || "").trim();
     const rutRaw = (rutInput?.value || "").trim();
-    const telRaw = (telefonoInput?.value || "").trim();
+    const contactoRaw = (contactoInput?.value || "").trim();
 
     const nombreOk = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]{3,}$/.test(nombreRaw);
-    const rutOk = /^(?=.*\d)[0-9kK.\-]{3,}$/.test(rutRaw);
-    const telOk = /^\d{9}$/.test(telRaw);
-
+    const rutOk = /^\d{7,8}-[0-9kK]$/.test(rutRaw); // Ej: 12345678-9
+    const contactoOk = /^\d{9}$/.test(contactoRaw);
     if (btnGuardar) {
-      btnGuardar.disabled = !(nombreOk && rutOk && telOk);
+      btnGuardar.disabled = !(nombreOk && rutOk && contactoOk);
     }
   }
 
@@ -267,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- VALIDACIONES FRONTEND (Nuevo Paciente) ---
     const nombreRaw = (formData.get("nombre") || "").trim();
     const rutRaw = (formData.get("rut") || "").trim();
-    const telRaw = (formData.get("contacto") || "").trim();
+    const contactoRawRaw = (formData.get("contacto") || "").trim();
 
     // 1) Nombre: mínimo 3 letras, solo letras/espacios/acentos
     const nombreOk = validarNombreEnVivo();
@@ -279,21 +278,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2) RUT: validación simple para datos de prueba
     const rutOk = validarRutEnVivo();
     if (!rutOk) {
-      alert("RUT inválido: usa números y opcionalmente puntos/guión.");
+      alert("RUT inválido: ingresa rut sin puntos y con guión");
       return;
     }
 
-    // 2) Teléfono: exactamente 9 dígitos
-    const telOk = validarTelefonoEnVivo();
-    if (!telOk) {
-      alert("Teléfono inválido: deben ser 9 dígitos (ej: 912345678).");
+    // 2) Contacto: exactamente 9 dígitos
+    const contactoOk = validarContactoEnVivo();
+    if (!contactoOk) {
+      alert("Contacto inválido: deben ser 9 dígitos numéricos.");
       return;
     }
 
     const payload = {
       nombre: nombreRaw,
       rut: rutRaw,
-      contacto: telRaw,
+      contacto: contactoRawRaw,
     };
 
     // Enviar a servidor

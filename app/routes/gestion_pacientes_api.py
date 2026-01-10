@@ -1,4 +1,5 @@
 # api para la pantalla gestion de pacientes del sistema
+# API de consulta (SELECT) para llenar la tabla de gestion de pacientes
 from flask import Blueprint, jsonify
 from sqlalchemy import text
 from datetime import date, datetime
