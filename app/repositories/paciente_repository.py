@@ -30,3 +30,8 @@ def list_pacientes() -> list[dict]:
         data.append(d)
 
     return data
+
+def exists_by_rut(rut: str) -> bool:
+    sql = text("SELECT 1 FROM paciente WHERE rut = :rut LIMIT 1")
+    with engine.connect() as conn:
+        return conn.execute(sql, {"rut": rut}).first() is not None

@@ -40,6 +40,13 @@ def crear_paciente(nombre: str, rut: str, contacto: str) -> int:
     except IntegrityError:
         raise DuplicateRUTError(f"El RUT '{rut}' ya existe.")
 
-
+# Servicio para obtener lista de pacientes
 def obtener_pacientes() -> list[dict]:
     return paciente_repository.list_pacientes()
+
+# Servicio para verificar existencia de paciente por RUT
+def existe_paciente_por_rut(rut: str) -> bool:
+    rut = (rut or "").strip().upper()
+    if not rut:
+        return False
+    return paciente_repository.exists_by_rut(rut)

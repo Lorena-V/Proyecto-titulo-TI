@@ -409,6 +409,175 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formNuevaReceta");
   if (!form) return;
 
+  const fechaInput = form.querySelector('input[name="fecha_emision"]');
+  const duracionInput = form.querySelector('input[name="duracion"]');
+  const rutInput = document.getElementById("rutPacienteReceta");
+  const rutFeedback = document.getElementById("rutPacienteFeedback");
+  const rutRegex = /^\d{7,8}-[0-9Kk]$/;
+  let rutExiste = false;
+  let rutUltimo = "";
+  let rutTimer = null;
+  let rutSeq = 0;
+
+  function setRutFeedback(msg) {
+    if (rutFeedback) rutFeedback.textContent = msg;
+  }
+
+  function marcarRutInvalido(msg) {
+    if (rutInput) {
+      rutInput.classList.add("is-invalid");
+      rutInput.classList.remove("is-valid");
+    }
+    if (msg) setRutFeedback(msg);
+  }
+
+  function marcarRutValido() {
+    if (rutInput) {
+      rutInput.classList.add("is-valid");
+      rutInput.classList.remove("is-invalid");
+    }
+  }
+
+  async function validarRutEnSubmit() {
+    if (!rutInput) return true;
+    const v = (rutInput.value || "").trim();
+
+    if (!v) {
+      rutExiste = false;
+      rutUltimo = "";
+      marcarRutInvalido("RUT requerido.");
+      return false;
+    }
+
+    if (!rutRegex.test(v)) {
+      rutExiste = false;
+      rutUltimo = "";
+      marcarRutInvalido("Ingresa un rut válido (sin puntos y con guión).");
+      return false;
+    }
+
+    if (v === rutUltimo && rutExiste) {
+      marcarRutValido();
+      return true;
+    }
+
+    try {
+      const res = await fetch(`/pacientes/existe?rut=${encodeURIComponent(v)}`);
+      const data = await res.json();
+      rutUltimo = v;
+      rutExiste = !!data.exists;
+      if (!rutExiste) {
+        marcarRutInvalido("RUT no existe en nuestros registros. Debe crear paciente.");
+        return false;
+      }
+      marcarRutValido();
+      return true;
+    } catch (err) {
+      rutUltimo = v;
+      rutExiste = false;
+      marcarRutInvalido("No se pudo validar el RUT.");
+      return false;
+    }
+  }
+
+  function validarRutEnVivo() {
+    if (!rutInput) return true;
+    const v = (rutInput.value || "").trim();
+
+    if (!v) {
+      rutExiste = false;
+      rutUltimo = "";
+      marcarRutInvalido("RUT requerido.");
+      return false;
+    }
+
+    if (!rutRegex.test(v)) {
+      rutExiste = false;
+      rutUltimo = "";
+      marcarRutInvalido("Ingresa un rut válido (sin puntos y con guión).");
+      return false;
+    }
+
+    if (v === rutUltimo && rutExiste) {
+      marcarRutValido();
+      return true;
+    }
+
+    rutExiste = false;
+    rutUltimo = "";
+    if (rutInput) {
+      rutInput.classList.remove("is-valid", "is-invalid");
+    }
+
+    if (rutTimer) clearTimeout(rutTimer);
+    const seq = ++rutSeq;
+    rutTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/pacientes/existe?rut=${encodeURIComponent(v)}`);
+        const data = await res.json();
+        if (seq !== rutSeq) return;
+        rutUltimo = v;
+        rutExiste = !!data.exists;
+        if (!rutExiste) {
+          marcarRutInvalido("RUT no existe en nuestros registros, debe crear nuevo paciente.");
+        } else {
+          marcarRutValido();
+        }
+      } catch (err) {
+        if (seq !== rutSeq) return;
+        rutUltimo = v;
+        rutExiste = false;
+        marcarRutInvalido("No se pudo validar el RUT.");
+      }
+    }, 300);
+
+    return false;
+  }
+
+  if (rutInput) {
+    rutInput.addEventListener("input", validarRutEnVivo);
+    rutInput.addEventListener("blur", validarRutEnVivo);
+  }
+
+  function validarFechaEnVivo() {
+    if (!fechaInput) return true;
+    const v = (fechaInput.value || "").trim();
+    if (!v) {
+      fechaInput.classList.add("is-invalid");
+      fechaInput.classList.remove("is-valid");
+      return false;
+    }
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const [y, m, d] = v.split("-").map(Number);
+    const f = new Date(y, m - 1, d);
+    f.setHours(0, 0, 0, 0);
+    const ok = !Number.isNaN(f.getTime()) && f <= hoy;
+    fechaInput.classList.toggle("is-invalid", !ok);
+    fechaInput.classList.toggle("is-valid", ok);
+    return ok;
+  }
+
+  if (fechaInput) {
+    fechaInput.addEventListener("change", validarFechaEnVivo);
+    fechaInput.addEventListener("blur", validarFechaEnVivo);
+  }
+
+  function validarDuracionEnVivo() {
+    if (!duracionInput) return true;
+    const v = (duracionInput.value || "").trim();
+    const n = Number(v);
+    const ok = Number.isInteger(n) && n >= 30 && n <= 180;
+    duracionInput.classList.toggle("is-invalid", !ok);
+    duracionInput.classList.toggle("is-valid", ok);
+    return ok;
+  }
+
+  if (duracionInput) {
+    duracionInput.addEventListener("input", validarDuracionEnVivo);
+    duracionInput.addEventListener("blur", validarDuracionEnVivo);
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -418,8 +587,26 @@ document.addEventListener("DOMContentLoaded", () => {
     form.querySelectorAll('input[name="medicamentos"]:checked')
       .forEach(chk => medicamentosSeleccionados.push(chk.value));
 
+    const fechaOk = validarFechaEnVivo();
+    if (!fechaOk) {
+      alert("Fecha inválida: no se pueden ingresar futuros despachos");
+      return;
+    }
+
+    const duracionOk = validarDuracionEnVivo();
+    if (!duracionOk) {
+      alert("Duración inválida: debe ser entre 30 y 180 días.");
+      return;
+    }
+
+    const rutOk = await validarRutEnSubmit();
+    if (!rutOk) {
+      alert("RUT inválido o no encontrado.");
+      return;
+    }
+
     const payload = {
-      id_paciente: formData.get("id_paciente"),
+      rut_paciente: (rutInput?.value || "").trim(),
       fecha_emision: formData.get("fecha_emision"),
       duracion: formData.get("duracion"),
       id_patologia: formData.get("id_patologia"),

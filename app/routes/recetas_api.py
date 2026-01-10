@@ -1,5 +1,6 @@
 # API para crear recetas
-from flask import Blueprint, request, jsonify
+import re
+from flask import Blueprint, request, jsonify, session
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
@@ -9,11 +10,17 @@ from app.utils.auth import roles_required
 recetas_api_bp = Blueprint("recetas_api", __name__, url_prefix="/api/recetas")
 
 @recetas_api_bp.post("")
-
+# Crear una nueva receta
+@roles_required("QF", "AUXILIAR")
 def crear_receta():
     data = request.get_json(force=True)
 
-    id_paciente = int(data.get("id_paciente"))
+    rut_paciente = (data.get("rut_paciente") or "").strip().upper()
+    if not rut_paciente:
+        return jsonify({"error": "RUT requerido"}), 400
+    # Formato simple: 7-8 dígitos + guión + DV (0-9 o K)
+    if not re.match(r"^\d{7,8}-[0-9Kk]$", rut_paciente):
+        return jsonify({"error": "RUT con formato inválido"}), 400
     fecha_emision = data.get("fecha_emision")  # 'YYYY-MM-DD'
     duracion = int(data.get("duracion"))
     id_patologia = int(data.get("id_patologia"))
@@ -27,6 +34,15 @@ def crear_receta():
     fecha_vencimiento = (fecha_dt + timedelta(days=duracion)).strftime("%Y-%m-%d")
 
     with engine.begin() as conn:
+        # Buscar id_paciente por RUT
+        row = conn.execute(
+            text("SELECT id_paciente FROM paciente WHERE rut = :rut"),
+            {"rut": rut_paciente}
+        ).fetchone()
+        if not row:
+            return jsonify({"error": "Paciente no encontrado para ese RUT"}), 400
+        id_paciente = row[0]
+
         # 1) tabla receta
         r = conn.execute(
             text("""

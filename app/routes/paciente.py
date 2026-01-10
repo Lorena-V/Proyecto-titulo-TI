@@ -2,7 +2,13 @@
 # GET POST: lista pacientes y crea pacientes
 import re
 from flask import Blueprint, jsonify, request
-from app.services.paciente_service import (crear_paciente, obtener_pacientes, ValidationError, DuplicateRUTError)
+from app.services.paciente_service import (
+    crear_paciente,
+    obtener_pacientes,
+    existe_paciente_por_rut,
+    ValidationError,
+    DuplicateRUTError,
+)
 
 paciente_bp = Blueprint("paciente", __name__, url_prefix="/pacientes")
 
@@ -11,6 +17,14 @@ paciente_bp = Blueprint("paciente", __name__, url_prefix="/pacientes")
 @paciente_bp.get("")
 def listar():
     return jsonify(obtener_pacientes()), 200
+
+# Verificar existencia por RUT
+@paciente_bp.get("/existe")
+def existe():
+    rut = (request.args.get("rut") or "").strip()
+    if not rut:
+        return jsonify({"exists": False, "error": "RUT requerido"}), 400
+    return jsonify({"exists": existe_paciente_por_rut(rut)}), 200
 
 # Crear paciente
 @paciente_bp.post("")
@@ -28,4 +42,3 @@ def crear():
 
     except Exception:
         return jsonify({"error": "Error interno al crear paciente"}), 500
-
