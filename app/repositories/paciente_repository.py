@@ -1,23 +1,23 @@
 from sqlalchemy import text
 from app.db import engine
 
-def create_paciente(nombre: str, rut: str) -> int:
+def create_paciente(nombre: str, rut: str, contacto: str) -> int:
     sql = text("""
-        INSERT INTO paciente (nombre, rut)
-        VALUES (:nombre, :rut)
+        INSERT INTO paciente (nombre, rut, contacto)
+        VALUES (:nombre, :rut, :contacto)
     """)
     with engine.begin() as conn:
-        result = conn.execute(sql, {"nombre": nombre, "rut": rut})
+        result = conn.execute(sql, {"nombre": nombre, "rut": rut, "contacto": contacto})
         return result.lastrowid
 
 """ def list_pacientes() -> list[dict]:
-    sql = text("SELECT id, nombre, rut, created_at FROM paciente ORDER BY id DESC")
+    sql = text("SELECT id, nombre, rut, contacto, created_at FROM paciente ORDER BY id DESC")
     with engine.connect() as conn:
         rows = conn.execute(sql).mappings().all()
         return [dict(r) for r in rows] """
 
 def list_pacientes() -> list[dict]:
-    sql = text("SELECT id, nombre, rut, created_at FROM paciente ORDER BY id DESC")
+    sql = text("SELECT id, nombre, rut, contacto, created_at FROM paciente ORDER BY id DESC")
     with engine.connect() as conn:
         rows = conn.execute(sql).mappings().all()
 

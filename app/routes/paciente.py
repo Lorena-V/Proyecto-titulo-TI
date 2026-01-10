@@ -31,7 +31,7 @@ def existe():
 def crear():
     data = request.get_json(silent=True) or {}
     try:
-        new_id = crear_paciente(data.get("nombre"), data.get("rut"))
+        new_id = crear_paciente(data.get("nombre"), data.get("rut"), data.get("contacto"))
         return jsonify({"message": "Paciente creado", "id": new_id}), 201
 
     except ValidationError as e:

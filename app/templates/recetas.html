@@ -86,7 +86,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Fecha de emisión</label>
                             <input name="fecha_emision" type="date" class="form-control" required>
-                            <div class="invalid-feedback"></div>
+                            <div class="invalid-feedback">Fecha invalida: No puede ingresar una fecha posterior</div>
                         </div>
 
                         <div class="col-md-6">
@@ -96,7 +96,9 @@
                                 type="number" 
                                 class="form-control" 
                                 min="30" max="180" required>
-                            <div class="invalid-feedback">La duración debe ser entre 30 y 180 días (mín 1 mes máx 6 meses)</div>
+                            <div class="invalid-feedback">
+                                La duración debe ser entre 30 y 180 días (mín 1 mes máx 6 meses)
+                            </div>
                         </div>
 
                         <div class="col-md-6">
@@ -115,10 +117,14 @@
 
                         <div class="col-12">
                             <label class="form-label">Medicamentos</label>
-                            <div id="listaMedicamentos" class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-                                <div class="text-muted small">Cargando medicamentos...</div>
+                            <div id="listaMedicamentos" 
+                                class="border rounded p-2" 
+                                style="max-height: 200px; overflow-y: auto;"
+                                style="display: none;">
+                                <!-- <div class="text-muted small">Cargando medicamentos...</div> -->
                             </div>
-                            <div class="invalid-feedback d-block" id="medicamentosFeedback" style="display: none;">
+                            <div class="invalid-feedback" 
+                                id="medicamentosFeedback" >
                                 Selecciona al menos un medicamento.
                             </div>
                         </div>

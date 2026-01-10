@@ -411,13 +411,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const fechaInput = form.querySelector('input[name="fecha_emision"]');
   const duracionInput = form.querySelector('input[name="duracion"]');
+  const patologiaSelect = form.querySelector('select[name="id_patologia"]');
+  const listaMedicamentos = document.getElementById("listaMedicamentos");
+  const medicamentosFeedback = document.getElementById("medicamentosFeedback");
   const rutInput = document.getElementById("rutPacienteReceta");
   const rutFeedback = document.getElementById("rutPacienteFeedback");
   const rutRegex = /^\d{7,8}-[0-9Kk]$/;
-  let rutExiste = false;
-  let rutUltimo = "";
-  let rutTimer = null;
-  let rutSeq = 0;
+  let rutExiste = false; 
+  let rutUltimo = ""; // para evitar consultas repetidas
+  let rutTimer = null; // para no saturar el servidor (espera a que el paciente escriba)
+  let rutSeq = 0; // secuencia para evitar respuestas fuera de orden
 
   function setRutFeedback(msg) {
     if (rutFeedback) rutFeedback.textContent = msg;
@@ -578,6 +581,42 @@ document.addEventListener("DOMContentLoaded", () => {
     duracionInput.addEventListener("blur", validarDuracionEnVivo);
   }
 
+  // Validar patología seleccionada
+  function validarPatologiaEnVivo() {
+    if (!patologiaSelect) return true;
+    const valuePatología = (patologiaSelect.value || "").trim(); // debe ser id seleccionado
+    const ok = valuePatología !== ""; // alguna opción seleccionada
+    patologiaSelect.classList.toggle("is-invalid", !ok);
+    patologiaSelect.classList.toggle("is-valid", ok);
+    return ok;
+  }
+
+  if (patologiaSelect) {
+    patologiaSelect.addEventListener("change", validarPatologiaEnVivo);
+    patologiaSelect.addEventListener("blur", validarPatologiaEnVivo);
+  }
+
+  function validarMedicamentosEnVivo() {
+    if (!listaMedicamentos) return true;
+    const seleccionados = listaMedicamentos.querySelectorAll('input[name="medicamentos"]:checked').length;
+    const ok = seleccionados > 0;
+    listaMedicamentos.classList.toggle("border-danger", !ok);
+    listaMedicamentos.classList.toggle("border-success", ok);
+    if (medicamentosFeedback) {
+      medicamentosFeedback.style.display = ok ? "none" : "block";
+    }
+    return ok;
+  }
+
+  if (listaMedicamentos) {
+    listaMedicamentos.addEventListener("change", (e) => {
+      if (e.target && e.target.matches('input[name="medicamentos"]')) {
+        validarMedicamentosEnVivo();
+      }
+    });
+  }
+
+  // Maneja el envío del formulario
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -596,6 +635,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const duracionOk = validarDuracionEnVivo();
     if (!duracionOk) {
       alert("Duración inválida: debe ser entre 30 y 180 días.");
+      return;
+    }
+
+    const patologiaOk = validarPatologiaEnVivo();
+    if (!patologiaOk) {
+      alert("Selecciona una patología.");
+      return;
+    }
+
+    const medicamentosOk = validarMedicamentosEnVivo();
+    if (!medicamentosOk) {
+      alert("Selecciona al menos un medicamento.");
       return;
     }
 
@@ -637,6 +688,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // desmarcar medicamentos
       form.querySelectorAll('input[name="medicamentos"]')
         .forEach(chk => chk.checked = false);
+
+      if (window.cargarRecetas) {
+        window.cargarRecetas();
+      }
 
     } catch (err) {
       console.error(err);

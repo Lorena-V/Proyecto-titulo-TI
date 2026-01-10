@@ -36,7 +36,7 @@ def crear_receta():
     with engine.begin() as conn:
         # Buscar id_paciente por RUT
         row = conn.execute(
-            text("SELECT id_paciente FROM paciente WHERE rut = :rut"),
+            text("SELECT id FROM paciente WHERE rut = :rut"),
             {"rut": rut_paciente}
         ).fetchone()
         if not row:
