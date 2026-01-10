@@ -1,17 +1,25 @@
-<!-- Gestión de medicamentos -->
- {% extends "base_module.html" %}
+{% extends "base_module.html" %}
 
-{% block title %}Gestión de Medicamentos{% endblock %}
+{% block title %} Gestión de Medicamentos {% endblock %}
 
 {% block module_content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h4 fw-bold mb-0">Gestión de medicamentos</h1>
-
     <div class="d-flex gap-2">
-        <button class="btn btn-outline-primary btn-sm" type="button">Reporte PDF</button>
-    </div>
+        <button class="btn btn-outline-primary btn-sm" 
+            type="button">Reporte
+        </button>
+        <button class="btn btn-primary btn-sm" 
+            type="button" 
+            data-bs-toggle="modal" 
+            data-bs-target="#modalNuevoMedicamento">
+        Nuevo Medicamento
+        </button>
+    </div>  
 </div>
+
+
 
 <div class="card shadow-sm">
     <div class="card-body">
@@ -31,9 +39,6 @@
                     <option value="3m">Últimos 3 meses</option>
                     <option value="6m">Últimos 6 meses</option>
                 </select>
-            </div>
-            <div class="col-12 col-md-3 text-md-end">
-                <button id="btnFiltrar" class="btn btn-outline-secondary w-100 w-md-auto" type="button">Filtrar</button>
             </div>
         </div>
 
