@@ -50,7 +50,8 @@
                         <th>Estado</th>
                         <th>Despachos</th>
                         <th>Último despacho</th>
-                        <th class="text-end">Acciones</th>
+                        <th>Medicamentos</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 
@@ -162,6 +163,32 @@
           Confirmar
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Medicamentos por receta -->
+<div class="modal fade" id="modalMedicamentosReceta" tabindex="-1">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Medicamentos asociados</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div id="contenidoMedicamentosReceta">
+          <p class="text-muted mb-0">Cargando medicamentos...</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+          Cerrar
+        </button>
+      </div>
+
     </div>
   </div>
 </div>

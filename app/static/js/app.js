@@ -77,6 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let allData = []; // cache
 
+  
+
   function estadoCalculado(row) {
     // fecha de vencimiento para decidir Vigente / Vencida / Porvencer
     // Por vencer = vigente y vence dentro de 30 días
@@ -764,6 +766,15 @@ document.addEventListener("DOMContentLoaded", () => {
         <td><span class="badge ${badgeEstado(r.estado)}">${r.estado}</span></td>
         <td>${r.despachos ?? 0}</td>
         <td>${r.ultimo_despacho ? formatFecha(r.ultimo_despacho) : "-"}</td>
+        <td class="text-center">
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            title="Ver medicamentos"
+            aria-label="Ver medicamentos de la receta"
+            onclick="verMedicamentosReceta(${r.id_receta})">
+            <i class="bi bi-capsule"></i>
+          </button>
+        </td>
         <td class="text-end">
           <button
             class="btn btn-outline-primary btn-sm"
@@ -862,3 +873,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// Función para ver medicamentos de una receta en un modal
+async function verMedicamentosReceta(idReceta) {
+  const contenedor = document.getElementById("contenidoMedicamentosReceta");
+  contenedor.innerHTML = `<p class="text-muted mb-0">Cargando medicamentos...</p>`;
+
+  try {
+    const res = await fetch(`/api/recetas/${idReceta}/medicamentos`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      contenedor.innerHTML = `<p class="text-danger">Error al cargar medicamentos</p>`;
+      return;
+    }
+
+    if (data.length === 0) {
+      contenedor.innerHTML = `<p class="text-muted">No hay medicamentos asociados.</p>`;
+    } else {
+      contenedor.innerHTML = `
+        <ul class="list-group list-group-flush">
+          ${data.map(m => `
+            <li class="list-group-item">
+              ${m.nombre}
+            </li>
+          `).join("")}
+        </ul>
+      `;
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById("modalMedicamentosReceta"));
+    modal.show();
+
+  } catch (err) {
+    console.error(err);
+    contenedor.innerHTML = `<p class="text-danger">Error de conexión</p>`;
+  }
+}

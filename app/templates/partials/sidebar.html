@@ -1,15 +1,22 @@
 <!-- Sidebar = Menú lateral izquierdo por modulo -->
 <a class="btn btn-light text-start" href="/home">Inicio</a>
 
-<!-- Todos -->
-<a class="btn btn-light text-start" href="/gestion_medicamentos">Gestión de Medicamentos</a>
-<a class="btn btn-light text-start" href="/reportes">Reportes</a>
-
 {% if rol in ["QF", "AUXILIAR"] %}
   <a class="btn btn-light text-start" href="/gestion_pacientes">Gestión de Pacientes</a>
   <a class="btn btn-light text-start" href="/gestion_recetas">Gestión de Recetas</a>
 {% endif %}
 
+<!-- Todos -->
+<a class="btn btn-light text-start" href="/gestion_medicamentos">
+  Gestión de Medicamentos
+  <i class="bi bi-capsule"></i>
+</a>
+<a class="btn btn-light text-start" href="/reportes">Reportes</a>
+
+
 {% if rol == "QF" %}
-  <a class="btn btn-light text-start" href="/usuarios">Administración de Usuarios</a>
+  <a class="btn btn-light text-start" href="/usuarios">
+    Administración de Usuarios
+    <i class="bi bi-capsule"></i>
+  </a>
 {% endif %}

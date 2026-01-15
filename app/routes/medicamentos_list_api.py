@@ -45,8 +45,8 @@ def listar_medicamentos():
           FROM tratamiento_medicamento tm
           JOIN tratamiento t ON t.id_tratamiento = tm.id_tratamiento
           JOIN receta r ON r.id_receta = t.id_receta
-          WHERE r.fecha_emision BETWEEN :inicio AND :fin
-            AND r.fecha_vencimiento >= :hoy
+          WHERE r.fecha_emision <= :fin
+            AND r.fecha_vencimiento >= :inicio
           GROUP BY tm.id_medicamento
         ) r ON r.id_medicamento = m.id_medicamento
         LEFT JOIN (
@@ -77,7 +77,6 @@ def listar_medicamentos():
         rows = conn.execute(sql, {
             "inicio": inicio,
             "fin": fin,
-            "hoy": fin,
             "q": q,
             "q_like": f"%{q}%",
         }).mappings().all()

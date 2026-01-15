@@ -96,3 +96,24 @@ def crear_receta():
         "id_receta": id_receta,
         "id_tratamiento": id_tratamiento
     }), 201
+
+@recetas_api_bp.get("/<int:id_receta>/medicamentos")
+@roles_required("QF", "AUXILIAR")
+def medicamentos_por_receta(id_receta):
+    sql = text("""
+        SELECT
+          m.id_medicamento,
+          m.nombre
+        FROM tratamiento t
+        JOIN tratamiento_medicamento tm
+          ON tm.id_tratamiento = t.id_tratamiento
+        JOIN medicamento m
+          ON m.id_medicamento = tm.id_medicamento
+        WHERE t.id_receta = :id_receta
+        ORDER BY m.nombre
+    """)
+
+    with engine.connect() as conn:
+        rows = conn.execute(sql, {"id_receta": id_receta}).mappings().all()
+
+    return jsonify([dict(r) for r in rows]), 200
