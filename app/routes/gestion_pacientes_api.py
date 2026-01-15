@@ -26,6 +26,7 @@ def listar_gestion_pacientes():
         SELECT
           pa.id AS id_paciente,
           pa.nombre AS paciente,
+          pa.rut AS rut,
           pa.contacto AS contacto,
           CONCAT(
             ROW_NUMBER() OVER (PARTITION BY pa.id ORDER BY r.fecha_emision DESC),
@@ -60,4 +61,3 @@ def listar_gestion_pacientes():
         data.append(item)
 
     return jsonify(data), 200
-

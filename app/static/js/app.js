@@ -104,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${row.paciente}</td>
+        <td>${row.rut ?? "-"}</td>
         <td>${row.contacto ?? "-"}</td>
         <td>${row.recetas}</td>
         <td>${row.patologia}</td>
@@ -120,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (data.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="10" class="text-center text-muted">Sin resultados</td>
+          <td colspan="11" class="text-center text-muted">Sin resultados</td>
         </tr>
       `;
     }
