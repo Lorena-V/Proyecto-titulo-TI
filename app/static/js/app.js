@@ -37,6 +37,14 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       tbody.appendChild(tr);
     });
+
+    if (data.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center text-muted">Sin resultados</td>
+        </tr>
+      `;
+    }
   }
 
   // Cargar inicial
