@@ -11,21 +11,21 @@ def home():
 
     menu_por_rol = {
         "QF": [
-            ("Administración de Usuarios", "/usuarios"),
-            ("Reportes", "/reportes"),
-            ("Gestión de Medicamentos", "/gestion_medicamentos"),
-            ("Gestión de Recetas", "/gestion_recetas"),
             ("Gestión de Pacientes", "/gestion_pacientes"),
+            ("Gestión de Recetas", "/gestion_recetas"),
+            ("Gestión de Medicamentos", "/gestion_medicamentos"),
+            ("Reportes", "/reportes"),
+            ("Administración de Usuarios", "/usuarios"),
         ],
         "AUXILIAR": [
-            ("Reportes", "/reportes"),
-            ("Gestión de Medicamentos", "/gestion_medicamentos"),
-            ("Gestión de Recetas", "/gestion_recetas"),
             ("Gestión de Pacientes", "/gestion_pacientes"),
+            ("Gestión de Recetas", "/gestion_recetas"),
+            ("Gestión de Medicamentos", "/gestion_medicamentos"),
+            ("Reportes", "/reportes"),
         ],
         "ABASTECIMIENTO": [
-            ("Reportes", "/reportes"),
             ("Gestión de Medicamentos", "/gestion_medicamentos"),
+            ("Reportes", "/reportes"), 
         ],
     }
     menu = menu_por_rol.get(rol, [])
