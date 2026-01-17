@@ -1,22 +1,40 @@
 <!-- Sidebar = Menú lateral izquierdo por modulo -->
-<a class="btn btn-light text-start" href="/home">Inicio</a>
+<a class="btn btn-light text-center" href="/home">
+  <i class="bi bi-house-fill fs-1"
+    title="Home"
+    aria-label="Ir al Home"></i>
+</a>
 
 {% if rol in ["QF", "AUXILIAR"] %}
-  <a class="btn btn-light text-start" href="/gestion_pacientes">Gestión de Pacientes</a>
-  <a class="btn btn-light text-start" href="/gestion_recetas">Gestión de Recetas</a>
+  <a class="btn btn-light text-center" href="/gestion_pacientes">
+    <i class="bi bi-person-vcard fs-1" 
+      title="Gestión de Pacientes"
+      aria-label="Gestionar Pacientes"></i>
+  </a>
+  <a class="btn btn-light text-center" href="/gestion_recetas">
+    <i class="bi bi-prescription2 fs-1"
+      title="Gestión de Recetas"
+      aria-label="Gestionar Recetas"></i>
+  </a>
 {% endif %}
 
 <!-- Todos -->
-<a class="btn btn-light text-start" href="/gestion_medicamentos">
-  Gestión de Medicamentos
-  <i class="bi bi-capsule"></i>
+<a class="btn btn-light text-center" href="/gestion_medicamentos">
+  <i class="bi bi-capsule fs-1"
+    title="Gestión de Medicamentos"
+    aria-label="Gestionar Medicamentos"></i>
 </a>
-<a class="btn btn-light text-start" href="/reportes">Reportes</a>
+<a class="btn btn-light text-center" href="/reportes">
+  <i class="bi bi-file-earmark-bar-graph-fill fs-1"
+    title="Reportes"
+    aria-label="Generar Reportes"></i>
+</a>
 
 
 {% if rol == "QF" %}
-  <a class="btn btn-light text-start" href="/usuarios">
-    Administración de Usuarios
-    <i class="bi bi-capsule"></i>
+  <a class="btn btn-light text-center" href="/usuarios">
+    <i class="bi bi-people-fill fs-1"
+      title="Administración de Usuarios"
+      aria-label="Administración Usuarios"></i>
   </a>
 {% endif %}
