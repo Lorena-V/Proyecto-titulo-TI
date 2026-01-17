@@ -3,3 +3,7 @@
   width: 220px;
   min-height: calc(100vh - 56px); /* 56px aprox altura navbar */
 }
+
+.home-menu-btn {
+  width: 180px;
+}

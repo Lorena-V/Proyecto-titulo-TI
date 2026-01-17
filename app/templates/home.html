@@ -11,10 +11,20 @@
   </div>
 
   <div class="card shadow-sm">
-    <div class="card-body">
+    <div class="card-body d-flex flex-column align-items-center py-5">
+        {% set iconos = {
+          "/usuarios": "bi bi-people-fill fs-1",
+          "/reportes": "bi bi-file-earmark-bar-graph-fill fs-1",
+          "/gestion_medicamentos": "bi bi-capsule fs-1",
+          "/gestion_recetas": "bi bi-prescription2 fs-1",
+          "/gestion_pacientes": "bi bi-person-vcard fs-1",
+        } %}
         <div class="d-flex flex-wrap gap-3">  
         {% for texto, link in menu %}
-        <a class="btn btn-outline-primary" href="{{ link }}">{{ texto }}</a>
+        <a class="btn btn-outline-primary d-flex flex-column align-items-center gap-1 home-menu-btn" href="{{ link }}">
+          <i class="{{ iconos.get(link, 'bi bi-house-fill') }} fs-1"></i>
+          <span>{{ texto }}</span>
+        </a>
         {% endfor %}
     </div>
       
