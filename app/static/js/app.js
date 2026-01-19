@@ -834,7 +834,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Funcionalidad para el modal de registrar despacho
 let recetaSeleccionada = null;
-
+// Abre el modal de despacho para la receta dada
 function abrirModalDespacho(idReceta) {
   recetaSeleccionada = idReceta;
   const modal = new bootstrap.Modal(

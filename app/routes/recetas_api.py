@@ -97,6 +97,7 @@ def crear_receta():
         "id_tratamiento": id_tratamiento
     }), 201
 
+# Endpoint para listar medicamentos asociados a una receta
 @recetas_api_bp.get("/<int:id_receta>/medicamentos")
 @roles_required("QF", "AUXILIAR")
 def medicamentos_por_receta(id_receta):

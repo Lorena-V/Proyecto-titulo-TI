@@ -11,6 +11,7 @@ med_list_api_bp = Blueprint(
     url_prefix="/api/medicamentos/lista"
 )
 
+# Función para calcular fechas de inicio y fin según el período
 def _mes_inicio_fin(periodo: str) -> tuple[date, date]:
     meses_atras = {
         "mes": 0,
@@ -73,11 +74,23 @@ def listar_medicamentos():
         LEFT JOIN (
           SELECT
             tm.id_medicamento,
-            CEIL(COUNT(d.id_despacho) / 3) AS promedio_3m
+            ROUND(AVG(mensual.cant_mes)) AS promedio_3m
           FROM tratamiento_medicamento tm
           JOIN tratamiento t ON t.id_tratamiento = tm.id_tratamiento
           JOIN despacho d ON d.id_tratamiento = t.id_tratamiento
-          WHERE d.fecha >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+          JOIN (
+            SELECT
+              tm2.id_medicamento,
+              YEAR(d2.fecha) AS anio,
+              MONTH(d2.fecha) AS mes,
+              COUNT(d2.id_despacho) AS cant_mes
+            FROM tratamiento_medicamento tm2
+            JOIN tratamiento t2 ON t2.id_tratamiento = tm2.id_tratamiento
+            JOIN despacho d2 ON d2.id_tratamiento = t2.id_tratamiento
+            WHERE d2.fecha >= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 2 MONTH)
+              AND d2.fecha <= CURDATE()
+            GROUP BY tm2.id_medicamento, anio, mes
+          ) mensual ON mensual.id_medicamento = tm.id_medicamento
           GROUP BY tm.id_medicamento
         ) p ON p.id_medicamento = m.id_medicamento
         WHERE (:q = '' OR LOWER(m.nombre) LIKE :q_like)
