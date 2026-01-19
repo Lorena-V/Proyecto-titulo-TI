@@ -34,7 +34,7 @@ def home():
 @views_bp.get("/gestion_medicamentos")
 @roles_required("QF", "AUXILIAR", "ABASTECIMIENTO")
 def gestion_medicamentos():
-    return render_template("medicamentos.html")
+    return render_template("medicamentos.html", rol=session.get("rol"))
 
 @views_bp.get("/gestion_pacientes")
 @roles_required("QF", "AUXILIAR")

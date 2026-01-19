@@ -11,13 +11,18 @@
             type="button">Reporte
             <i class="bi bi-filetype-pdf"></i>
         </button>
-        <button class="btn btn-primary btn-sm" 
-            type="button" 
-            data-bs-toggle="modal" 
-            data-bs-target="#modalNuevoMedicamento">
-        Nuevo Medicamento
-        <i class="bi bi-plus-circle"></i>
-        </button>
+
+        <!-- Botón nuevo medicamento -->
+        {% if rol != "ABASTECIMIENTO" %}
+            <button class="btn btn-primary btn-sm" 
+                type="button" 
+                data-bs-toggle="modal" 
+                data-bs-target="#modalNuevoMedicamento">
+                Nuevo Medicamento
+                <i class="bi bi-plus-circle"></i>
+            </button>
+        {% endif %}
+
     </div>  
 </div>
 
