@@ -71,4 +71,33 @@
     </div>
 </div>
 
+<!-- Modal: Nuevo medicamento -->
+<div class="modal fade" id="modalNuevoMedicamento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Crear medicamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formNuevoMedicamento">
+                <label class="form-label">Nombre</label>
+                <input name="nombre" id="nombreMedicamento" class="form-control" placeholder="Ej: Enalapril 10mg" required>
+                <div class="invalid-feedback">Ingresa un nombre válido (mínimo 3 caracteres).</div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                <button id="btnGuardarMedicamento" class="btn btn-primary btn-sm" form="formNuevoMedicamento">
+                Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 {% endblock %}

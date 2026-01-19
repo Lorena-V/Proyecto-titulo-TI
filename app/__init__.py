@@ -43,5 +43,8 @@ def create_app():
     
     from app.routes.reportes_api import reportes_api_bp
     app.register_blueprint(reportes_api_bp)
+
+    from app.routes.medicamentos_api import med_api_bp
+    app.register_blueprint(med_api_bp)
     
     return app

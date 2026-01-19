@@ -50,6 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cargar inicial
   refrescarTabla();
 
+  // Exponer función globalmente (para recarga externa)
+  window.refrescarMedicamentos = refrescarTabla;
+
   // Evento: búsqueda dinámica
   searchInput.addEventListener("input", refrescarTabla);
 
@@ -119,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
         <td>${row.recetas}</td>
         <td>${row.patologia}</td>
         <td>${formatFecha(row.ingreso)}</td>
-        <td>${row.duracion_dias} días</td>
         <td>${formatFecha(row.vencimiento)}</td>
         <td><span class="badge ${badgeClass}">${est}</span></td>
         <td>${row.ultimo_despacho ? formatFecha(row.ultimo_despacho) : "-"}</td>
@@ -131,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (data.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="11" class="text-center text-muted">Sin resultados</td>
+          <td colspan="10" class="text-center text-muted">Sin resultados</td>
         </tr>
       `;
     }
@@ -910,3 +912,68 @@ async function verMedicamentosReceta(idReceta) {
     contenedor.innerHTML = `<p class="text-danger">Error de conexión</p>`;
   }
 }
+
+// Agrega funcionalidad al formulario de nuevo medicamento
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formNuevoMedicamento");
+  if (!form) return;
+
+  const inputNombre = document.getElementById("nombreMedicamento");
+  const btnGuardar = document.getElementById("btnGuardarMedicamento");
+
+  function validarNombre() {
+    const v = (inputNombre.value || "").trim();
+    const ok = v.length >= 3;
+    inputNombre.classList.toggle("is-invalid", !ok);
+    inputNombre.classList.toggle("is-valid", ok);
+    if (btnGuardar) btnGuardar.disabled = !ok;
+    return ok;
+  }
+
+  inputNombre?.addEventListener("input", validarNombre);
+  validarNombre();
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!validarNombre()) return;
+
+    const nombre = (inputNombre.value || "").trim();
+
+    try {
+      const res = await fetch("/api/medicamentos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Error al crear medicamento");
+        return;
+      }
+
+      // cerrar modal
+      const modalEl = document.getElementById("modalNuevoMedicamento");
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal.hide();
+
+      // limpiar
+      form.reset();
+      inputNombre.classList.remove("is-valid", "is-invalid");
+      validarNombre();
+
+      // refrescar tabla medicamentos (reusa tu flujo actual)
+      if (window.refrescarMedicamentos) {
+        await window.refrescarMedicamentos();
+      } else {
+        // fallback: recarga la página si no tenemos función global
+        location.reload();
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Error de conexión con el servidor");
+    }
+  });
+});
