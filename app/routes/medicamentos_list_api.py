@@ -11,15 +11,27 @@ med_list_api_bp = Blueprint(
     url_prefix="/api/medicamentos/lista"
 )
 
-# Función para determinar la fecha de inicio según el período seleccionado
-def inicio_por_periodo(periodo: str) -> date:
-    dias = {
-        "mes": 30,
-        "2m": 60,
-        "3m": 90,
-        "6m": 180,
-    }.get(periodo, 30)
-    return date.today() - timedelta(days=dias)
+def _mes_inicio_fin(periodo: str) -> tuple[date, date]:
+    meses_atras = {
+        "mes": 0,
+        "1m": 1,
+        "2m": 2,
+    }.get(periodo, 0)
+    hoy = date.today()
+    total_meses = (hoy.year * 12 + (hoy.month - 1)) - meses_atras
+    year = total_meses // 12
+    month = total_meses % 12 + 1
+    inicio = date(year, month, 1)
+    if periodo == "mes":
+        fin = hoy
+    else:
+        next_month = month + 1
+        next_year = year
+        if next_month == 13:
+            next_month = 1
+            next_year += 1
+        fin = date(next_year, next_month, 1) - timedelta(days=1)
+    return inicio, fin
 
 # Endpoint para listar medicamentos con estadísticas
 @med_list_api_bp.get("")
@@ -27,8 +39,7 @@ def inicio_por_periodo(periodo: str) -> date:
 def listar_medicamentos():
     q = (request.args.get("q") or "").strip().lower()
     periodo = (request.args.get("periodo") or "mes").strip()
-    inicio = inicio_por_periodo(periodo)
-    fin = date.today()
+    inicio, fin = _mes_inicio_fin(periodo)
 
     sql = text("""
         SELECT
