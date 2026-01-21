@@ -4,7 +4,7 @@ from app.db import engine
 
 health_bp = Blueprint("health", __name__)
 
-@health_bp.get("/")
+@health_bp.get("/health")
 def home():
     return jsonify({"status": "ok", "message": "Flask funcionando (estructura por capas)"})
 
