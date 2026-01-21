@@ -1,8 +1,12 @@
 from app.utils.auth import login_required, roles_required
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, url_for, redirect
 # Vistas HTML
 
 views_bp = Blueprint("views", __name__)
+
+@views_bp.get("/")
+def index():
+    return redirect(url_for("auth.login"))
 
 @views_bp.get("/home")
 @login_required
