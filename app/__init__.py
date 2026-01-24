@@ -9,8 +9,13 @@ def create_app():
     app = Flask(__name__)
     # Para proteger datos de sesión
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev")
+    
+    # Cookies de sesión más seguras
+    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
-    # Registrar rutas (blueprints)
+    # Registro de rutas (blueprints)
     from app.routes.health import health_bp
     app.register_blueprint(health_bp)
 

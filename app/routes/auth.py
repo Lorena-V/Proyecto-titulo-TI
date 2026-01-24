@@ -21,8 +21,6 @@ def login():
         with engine.connect() as conn:
             row = conn.execute(sql, {"usuario": usuario}).mappings().first()
         
-        print("DEBUG LOGIN:", row)
-
         # Verificar credenciales (.strip() para eliminar espacios en blanco que se guardaron por error)
         if row and bcrypt.checkpw(password, row["password"].strip().encode()):
             session["user_id"] = row["id_usuario"]
