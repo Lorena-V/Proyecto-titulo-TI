@@ -28,27 +28,31 @@ def listar_gestion_pacientes():
           pa.nombre AS paciente,
           pa.rut AS rut,
           pa.contacto AS contacto,
-          CONCAT(
-            ROW_NUMBER() OVER (PARTITION BY pa.id ORDER BY r.fecha_emision DESC),
-            '/',
-            COUNT(*) OVER (PARTITION BY pa.id)
-          ) AS recetas,
-          pat.nombre AS patologia,
+          CASE
+            WHEN r.id_receta IS NULL THEN '0/0'
+            ELSE CONCAT(
+              ROW_NUMBER() OVER (PARTITION BY pa.id ORDER BY r.fecha_emision DESC),
+              '/',
+              COUNT(r.id_receta) OVER (PARTITION BY pa.id)
+            )
+          END AS recetas,
+          COALESCE(MAX(pat.nombre), '-') AS patologia,
           r.fecha_emision AS ingreso,
           r.duracion AS duracion_dias,
           r.fecha_vencimiento AS vencimiento,
           CASE
+            WHEN r.fecha_vencimiento IS NULL THEN '-'
             WHEN r.fecha_vencimiento >= CURDATE() THEN 'Vigente'
             ELSE 'Vencida'
           END AS estado,
           MAX(d.fecha) AS ultimo_despacho,
           COUNT(d.id_despacho) AS despachos_realizados
-        FROM tratamiento t
-        JOIN receta r ON r.id_receta = t.id_receta
-        JOIN paciente pa ON pa.id = r.id_paciente
-        JOIN patologia pat ON pat.id_patologia = t.id_patologia
+        FROM paciente pa
+        LEFT JOIN receta r ON r.id_paciente = pa.id
+        LEFT JOIN tratamiento t ON t.id_receta = r.id_receta
+        LEFT JOIN patologia pat ON pat.id_patologia = t.id_patologia
         LEFT JOIN despacho d ON d.id_tratamiento = t.id_tratamiento
-        GROUP BY t.id_tratamiento, pa.id, r.fecha_emision
+        GROUP BY pa.id, r.id_receta, r.fecha_emision
         ORDER BY pa.nombre, r.fecha_emision DESC;
     """)
 
