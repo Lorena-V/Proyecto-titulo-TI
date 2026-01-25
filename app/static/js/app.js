@@ -830,7 +830,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (filtroEstado) filtroEstado.addEventListener("change", aplicarFiltros);
   if (btnFiltrar) btnFiltrar.addEventListener("click", aplicarFiltros);
 
-  // (opcional) exponer para recargar desde otros flujos
+  // Exponer función globalmente (para recarga externa)
   window.cargarRecetas = cargarRecetas;
 });
 
