@@ -1,5 +1,6 @@
 from app.utils.auth import login_required, roles_required
 from flask import Blueprint, render_template, session, url_for, redirect
+from app.services.alertas_service import obtener_recetas_mes
 # Vistas HTML
 
 views_bp = Blueprint("views", __name__)
@@ -33,7 +34,14 @@ def home():
         ],
     }
     menu = menu_por_rol.get(rol, [])
-    return render_template("home.html", rol=rol, menu=menu) #para que el html sepa con que rol está logueado
+    recetas_mes = obtener_recetas_mes(rol)
+
+    return render_template(
+        "home.html",
+        rol=rol,
+        menu=menu,
+        recetas_mes=recetas_mes,
+    ) #para que el html sepa con que rol está logueado
 
 @views_bp.get("/gestion_medicamentos")
 @roles_required("QF", "AUXILIAR", "ABASTECIMIENTO")
