@@ -12,21 +12,21 @@
 
   <div class="card shadow-sm">
     <div class="card-body d-flex flex-column align-items-center py-5">
-        {% set iconos = {
-          "/gestion_pacientes": "bi bi-person-vcard",
-          "/gestion_recetas": "bi bi-prescription2",
-          "/gestion_medicamentos": "bi bi-capsule",
-          "/reportes": "bi bi-file-earmark-bar-graph-fill",
-          "/usuarios": "bi bi-people-fill",
-        } %}
-        <div class="d-flex flex-wrap space-evenly justify-content-center gap-5">  
+      {% set iconos = {
+        "/gestion_pacientes": "bi bi-person-vcard",
+        "/gestion_recetas": "bi bi-prescription2",
+        "/gestion_medicamentos": "bi bi-capsule",
+        "/reportes": "bi bi-file-earmark-bar-graph-fill",
+        "/usuarios": "bi bi-people-fill",
+      } %}
+      <div class="d-flex flex-wrap space-evenly justify-content-center gap-5">  
         {% for texto, link in menu %}
         <a class="btn btn-outline-primary d-flex flex-column align-items-center gap-2 home-menu-btn" href="{{ link }}">
           <i class="{{ iconos.get(link, 'bi bi-house-fill') }} fs-1"></i>
           <span class="h5">{{ texto }}</span>
         </a>
         {% endfor %}
-    </div>
+      </div>
     </div>
   </div>
 
@@ -36,10 +36,11 @@
     <div class="card-body d-flex flex-column align-items-center py-5">
       <h1 class="h4 fw-bold mb-3">Alertas</h1>
 
+      <!-- Falta agregar funcionalidad (datos reales) -->
       <div class="d-flex flex-wrap space-evenly justify-content-center gap-5">  
         <a class="btn btn-success d-flex flex-column align-items-center p-3" href="/gestion_pacientes">
           <i class="bi bi-person-fill-check h1"></i>
-          <span class="h1">8</span>
+          <span class="h1">"8"</span>
           <i>Nuevos pacientes</i>
         </a>
         <a class="btn btn-warning d-flex flex-column align-items-center p-3" href="/gestion_recetas">
@@ -55,5 +56,5 @@
       </div>
     </div>
   </div>
+  {% endif %}
 {% endblock %}
-
