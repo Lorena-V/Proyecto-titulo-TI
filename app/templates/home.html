@@ -27,7 +27,32 @@
         </a>
         {% endfor %}
     </div>
-      
+    </div>
+  </div>
+
+  <!-- Alertas que sólo ve el QF -->
+  {% if rol == "QF" %}
+  <div class="card shadow-sm mt-4">
+    <div class="card-body d-flex flex-column align-items-center py-5">
+      <h1 class="h4 fw-bold mb-3">Alertas</h1>
+
+      <div class="d-flex flex-wrap space-evenly justify-content-center gap-5">  
+        <a class="btn btn-success d-flex flex-column align-items-center p-3" href="/gestion_pacientes">
+          <i class="bi bi-person-fill-check h1"></i>
+          <span class="h1">8</span>
+          <i>Nuevos pacientes</i>
+        </a>
+        <a class="btn btn-warning d-flex flex-column align-items-center p-3" href="/gestion_recetas">
+          <i class="bi bi-exclamation-triangle-fill h1"></i>
+          <span class="h1">"5"</span>
+          <i>Recetas por vencer</i>
+        </a>
+        <a class="btn btn-danger d-flex flex-column align-items-center p-3" href="/gestion_recetas">
+          <i class="bi bi-x-circle-fill h1"></i>
+          <span class="h1">"0"</span>
+          <i>Recetas vencidas</i>
+        </a>
+      </div>
     </div>
   </div>
 {% endblock %}
