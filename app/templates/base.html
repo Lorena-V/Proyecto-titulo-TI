@@ -26,7 +26,16 @@
       <a class="navbar-brand fw-semibold" href="#">Logo</a>
 
       <div class="ms-auto">
-        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('auth.logout') }}">Cerrar Sesión</a>
+        {% if session.get("rol") %}
+          <a class="btn btn-outline-primary btn-sm" href="{{ url_for('auth.logout') }}">
+            Cerrar Sesión
+          </a>
+          <!-- oculta botón de cerrar sesión si la sesión no está iniciada  -->
+        {% else %}
+          <a class="btn btn-outline-primary btn-sm d-none" href="#" tabindex="-1">
+            Cerrar Sesión
+          </a>
+        {% endif %}
       </div>
     </div>
   </nav>
