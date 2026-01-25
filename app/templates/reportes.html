@@ -1,6 +1,36 @@
 {% extends "base_module.html" %}
+
 {% block title %}Reportes{% endblock %}
+
 {% block module_content %}
-<h1 class="h4 fw-bold">Reportes</h1>
-<p class="text-muted mb-0">Módulo en construcción.</p>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 fw-bold mb-0">Reportes</h1>
+</div>
+<div class="card shadow-sm">
+    <div class="card-body d-flex justify-content-center gap-5">
+        <!-- Abastecimiento no puede descargar estos reportes -->
+        {% if rol != "ABASTECIMIENTO" %}
+        <button 
+            id="btnReportePacientes"  
+            class="btn btn-outline-primary btn-sm" 
+            type="button">Reporte de Pacientes
+            <i class="bi bi-filetype-xml"></i>
+        </button>
+        
+        <button 
+            class="btn btn-outline-primary btn-sm" 
+            type="button">Reporte de Recetas
+            <i class="bi bi-filetype-xml"></i>
+        </button>
+        {% endif %}
+        
+        <button 
+            class="btn btn-outline-primary btn-sm" 
+            type="button">Reporte de Medicamentos
+            <i class="bi bi-filetype-xml"></i>
+        </button>
+        
+    </div>
+</div>
 {% endblock %}
