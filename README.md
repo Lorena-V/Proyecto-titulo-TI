@@ -20,7 +20,7 @@ DB_USER=usuario_db
 DB_PASSWORD=clave_db
 DB_HOST=localhost
 DB_PORT=3306
-DB_NAME=nombre_db
+DB_NAME=farmaciaDB
 SECRET_KEY=tu_clave_secreta
 ```
 
@@ -29,6 +29,48 @@ SECRET_KEY=tu_clave_secreta
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+## Base de datos (dump.sql)
+El proyecto incluye un dump completo en `dump.sql`.
+
+### 1) Crear usuario (opcional) y permisos
+Si quieres usar un usuario dedicado para la app:
+
+```sql
+CREATE USER 'farmacia_user'@'localhost' IDENTIFIED BY 'tu_password';
+GRANT ALL PRIVILEGES ON farmaciaDB.* TO 'farmacia_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### 2) Importar el dump
+Desde la raiz del proyecto:
+
+```bash
+mysql -u root -p < dump.sql
+```
+
+Notas:
+- El dump ya contiene `CREATE DATABASE farmaciaDB` y `USE farmaciaDB`.
+- Si ya tenias tablas previas, el dump las reemplaza (`DROP TABLE IF EXISTS`).
+
+### 3) Configurar `.env` para la DB
+Asegura que los valores coincidan con tu servidor MySQL/MariaDB:
+
+```env
+DB_USER=farmacia_user
+DB_PASSWORD=tu_password
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=farmaciaDB
+```
+
+### 4) Verificar que cargo correctamente
+Puedes validar tablas y datos basicos:
+
+```bash
+mysql -u farmacia_user -p -D farmaciaDB -e "SHOW TABLES;"
+mysql -u farmacia_user -p -D farmaciaDB -e "SELECT COUNT(*) AS usuarios FROM usuario;"
 ```
 
 ## Ejecucion
@@ -46,5 +88,5 @@ Luego abre `http://localhost:5000/login`.
 - `app/db.py` define la conexion a la base de datos.
 
 ## Notas
-- La app asume una base de datos existente con las tablas correspondientes.
+- La app requiere que la base de datos este cargada desde `dump.sql`.
 - El debug esta habilitado por defecto en `app.py`.
